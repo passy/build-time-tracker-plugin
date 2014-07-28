@@ -1,0 +1,69 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
+  }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'nexus'
+apply plugin: 'idea'
+
+dependencies {
+  repositories {
+    mavenCentral()
+  }
+
+  compile gradleApi()
+  compile localGroovy()
+  compile 'org.rauschig:jarchivelib:0.6.0'
+  compile 'commons-io:commons-io:2.4'
+}
+
+group = 'net.rdrei.android.buildtimetracker'
+version = '0.1.0-SNAPSHOT'
+
+install {
+  repositories.mavenInstaller {
+    pom.artifactId = 'gradle-plugin'
+  }
+}
+uploadArchives {
+  repositories.mavenDeployer {
+    pom.artifactId = 'gradle-plugin'
+  }
+}
+
+modifyPom {
+  project {
+    name 'SDK Manager'
+    description 'Gradle plugin which tracks your build times.'
+    url 'https://github.com/passy/build-time-tracker-plugin'
+    inceptionYear '2014'
+
+    scm {
+      url 'https://github.com/passy/build-time-tracker-plugin'
+      connection 'scm:git:git://github.com/passy/build-time-tracker-plugin.git'
+      developerConnection 'scm:git:ssh://git@github.com/passy/build-time-tracker-plugin.git'
+    }
+
+    licenses {
+      license {
+        name 'The Apache Software License, Version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        distribution 'repo'
+      }
+    }
+
+    developers {
+      developer {
+        id 'passy'
+        name 'Pascal Hartig'
+        email 'phartig@rdrei.net'
+      }
+    }
+  }
+}

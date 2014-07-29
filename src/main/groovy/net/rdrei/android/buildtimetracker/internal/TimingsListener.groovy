@@ -1,8 +1,11 @@
 package net.rdrei.android.buildtimetracker.internal
 
+import net.rdrei.android.buildtimetracker.BuildTimeTrackerConfig
+import net.rdrei.android.buildtimetracker.Reporter
 import net.rdrei.android.buildtimetracker.reporters.BuildTimeTrackerReporter
 import org.gradle.BuildListener
 import org.gradle.BuildResult
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.initialization.Settings
@@ -15,7 +18,8 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
     private timings = []
     private reporters = []
 
-    TimingsListener() {
+    TimingsListener(NamedDomainObjectContainer<Reporter> reporters) {
+        this.reporters = reporters
     }
 
     @Override
@@ -41,6 +45,12 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
         }
 
         printf "Total time wasted: %7sms\n", total
+
+        println "REPORTERS:" + reporters
+        reporters.each {
+            print "reporter: $it"
+        }
+        println "------"
     }
 
     @Override

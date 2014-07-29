@@ -13,9 +13,8 @@ class BuildTimeTrackerPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         def extension = project.extensions.create("buildtimetracker", BuildTimeTrackerConfig)
-        project.buildtimetracker.extensions.reporters = project.container(Reporter)
-
-        project.gradle.addBuildListener(new TimingsListener())
+        def reporters = project.buildtimetracker.extensions.reporters = project.container(Reporter)
+        project.gradle.addBuildListener(new TimingsListener(reporters))
     }
 }
 
@@ -28,5 +27,10 @@ class Reporter {
 
     Reporter(String name) {
         this.name = name
+    }
+
+    @Override
+    String toString() {
+        return name
     }
 }

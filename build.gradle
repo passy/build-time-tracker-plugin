@@ -21,6 +21,8 @@ dependencies {
   compile localGroovy()
   compile 'org.rauschig:jarchivelib:0.6.0'
   compile 'commons-io:commons-io:2.4'
+
+  testCompile 'junit:junit:4.11'
 }
 
 group = 'net.rdrei.android.buildtimetracker'

@@ -1,6 +1,6 @@
 package net.rdrei.android.buildtimetracker.reporters
 
-import net.rdrei.android.buildtimetracker.internal.Timing
+import net.rdrei.android.buildtimetracker.Timing
 
 class SummaryReporter implements BuildTimeTrackerReporter {
     @Override

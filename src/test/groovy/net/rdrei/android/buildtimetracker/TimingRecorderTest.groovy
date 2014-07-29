@@ -1,4 +1,4 @@
-package net.rdrei.android.buildtimetracker.internal
+package net.rdrei.android.buildtimetracker
 
 import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.BuildTimeTrackerPlugin
@@ -14,7 +14,7 @@ import org.junit.Test
 
 import static org.junit.Assert.assertEquals
 
-class TimingsListenerTest {
+class TimingRecorderTest {
 
     Task mockTask(String path) {
         def mockTask = new MockFor(Task)

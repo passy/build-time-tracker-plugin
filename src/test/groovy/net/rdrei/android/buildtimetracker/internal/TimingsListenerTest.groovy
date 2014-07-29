@@ -34,7 +34,7 @@ class TimingsListenerTest {
     }
 
     BuildTimeTrackerPlugin buildPlugin() {
-        def plugin = new BuildTimeTrackerPlugin()
+        new BuildTimeTrackerPlugin()
     }
 
     @Test

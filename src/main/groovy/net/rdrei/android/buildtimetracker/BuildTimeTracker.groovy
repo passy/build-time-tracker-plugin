@@ -1,6 +1,6 @@
 package net.rdrei.android.buildtimetracker
 
-import net.rdrei.android.buildtimetracker.reporters.BuildTimeTrackerReporter
+import net.rdrei.android.buildtimetracker.reporters.AbstractBuildTimeTrackerReporter
 import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
@@ -20,7 +20,7 @@ class BuildTimeTrackerPlugin implements Plugin<Project> {
         project.gradle.addBuildListener(new TimingRecorder(this))
     }
 
-    List<BuildTimeTrackerReporter> getReporters() {
+    List<AbstractBuildTimeTrackerReporter> getReporters() {
         reporterExtensions.collect { ext ->
             if (REPORTERS.containsKey(ext.name)) {
                 return REPORTERS.get(ext.name).newInstance(ext.options)

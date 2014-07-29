@@ -49,7 +49,7 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
         println "Task timings:"
         for (timing in timings) {
             if (timing.ms >= 50) {
-                printf "%7sms  %s\n", timing
+                printf "%7sms  %s\n", timing.ms, timing.path
             }
             total += timing.ms
         }

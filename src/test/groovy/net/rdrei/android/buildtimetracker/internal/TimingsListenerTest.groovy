@@ -48,4 +48,16 @@ class TimingsListenerTest {
             assertEquals(123, listener.getTiming("test"))
         }
     }
+
+    @Test
+    void buildFinishes() {
+        mockClock(0).use {
+            TimingsListener listener = new TimingsListener()
+            Task task = mockTask("test")
+
+            listener.beforeExecute(task)
+            listener.afterExecute(task, null)
+            listener.buildFinished(null)
+        }
+    }
 }

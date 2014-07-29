@@ -2,7 +2,13 @@ package net.rdrei.android.buildtimetracker.reporters
 
 import net.rdrei.android.buildtimetracker.Timing
 
-class SummaryReporter implements BuildTimeTrackerReporter {
+class SummaryReporter extends BuildTimeTrackerReporter {
+    SummaryReporter(Map<String, String> options) {
+        super(options)
+
+        println "Options received: $options"
+    }
+
     @Override
     def run(List<Timing> timings) {
         def total = 0

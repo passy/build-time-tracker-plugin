@@ -26,7 +26,7 @@ class BuildTimeTrackerPlugin implements Plugin<Project> {
         // TODO: Use some functional construct here
         reporterExtensions.each { ext ->
             if (REPORTERS.containsKey(ext.name)) {
-                reporters.add(REPORTERS.get(ext.name).newInstance())
+                reporters.add(REPORTERS.get(ext.name).newInstance(ext.options))
             }
         }
 
@@ -35,10 +35,12 @@ class BuildTimeTrackerPlugin implements Plugin<Project> {
 }
 
 class BuildTimeTrackerExtension {
+    // Not in use at the moment.
 }
 
 class ReporterExtension {
     final String name
+    final Map<String, String> options = [:]
 
     ReporterExtension(String name) {
         this.name = name
@@ -47,5 +49,14 @@ class ReporterExtension {
     @Override
     String toString() {
         return name
+    }
+
+    def methodMissing(String name, args) {
+        // I'm feeling really naughty.
+        if (args.length == 1 && args[0] instanceof String) {
+            options[name] = args[0]
+        } else {
+            throw new MissingMethodException(name, this.class, args)
+        }
     }
 }

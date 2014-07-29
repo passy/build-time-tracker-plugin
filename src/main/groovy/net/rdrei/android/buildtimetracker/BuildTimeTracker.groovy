@@ -21,16 +21,11 @@ class BuildTimeTrackerPlugin implements Plugin<Project> {
     }
 
     List<BuildTimeTrackerReporter> getReporters() {
-        def reporters = []
-
-        // TODO: Use some functional construct here
-        reporterExtensions.each { ext ->
+        reporterExtensions.collect { ext ->
             if (REPORTERS.containsKey(ext.name)) {
-                reporters.add(REPORTERS.get(ext.name).newInstance(ext.options))
+                return REPORTERS.get(ext.name).newInstance(ext.options)
             }
-        }
-
-        reporters
+        }.findAll { ext -> ext != null }
     }
 }
 

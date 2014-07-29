@@ -42,6 +42,13 @@ $ ./gradlew clean assemble
 (TBD)
 ```
 
+
+Developing
+----------
+
+This project is built and tested by [Travis](https://travis-ci.org) at
+[passy/build-time-tracker-plugin](https://travis-ci.org/passy/build-time-tracker-plugin).
+
 License
 --------
 

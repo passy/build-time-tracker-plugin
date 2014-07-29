@@ -1,8 +1,10 @@
 package net.rdrei.android.buildtimetracker.internal
 
+import net.rdrei.android.buildtimetracker.BuildListenerAdapter
 import net.rdrei.android.buildtimetracker.BuildTimeTrackerConfig
 import net.rdrei.android.buildtimetracker.Reporter
 import net.rdrei.android.buildtimetracker.reporters.BuildTimeTrackerReporter
+import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
 import org.gradle.BuildListener
 import org.gradle.BuildResult
 import org.gradle.api.NamedDomainObjectContainer
@@ -23,12 +25,12 @@ class Timing {
     }
 }
 
-class TimingsListener implements TaskExecutionListener, BuildListener {
+class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListener {
     private Clock clock
     private timings = []
-    private reporters = []
+    private NamedDomainObjectContainer<Reporter> reporters
 
-    TimingsListener(NamedDomainObjectContainer<Reporter> reporters) {
+    TimingRecorder(NamedDomainObjectContainer<Reporter> reporters) {
         this.reporters = reporters
     }
 
@@ -45,38 +47,18 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
 
     @Override
     void buildFinished(BuildResult result) {
-        def total = 0
-        println "Task timings:"
-        for (timing in timings) {
-            if (timing.ms >= 50) {
-                printf "%7sms  %s\n", timing.ms, timing.path
-            }
-            total += timing.ms
-        }
-
-        printf "Total time wasted: %7sms\n", total
-
         println "REPORTERS:" + reporters
-        reporters.each {
-            print "reporter: $it"
+        reporters.each { reporter ->
+            reporter.run(timings)
+            printf "reporter: %s", reporter
         }
-        println "------"
+
+        // TODO: Add using DSL syntax eventually.
+        new SummaryReporter().run(timings)
     }
 
-    @Override
-    void buildStarted(Gradle gradle) {}
-
-    @Override
-    void projectsEvaluated(Gradle gradle) {}
-
-    @Override
-    void projectsLoaded(Gradle gradle) {}
-
-    @Override
-    void settingsEvaluated(Settings settings) {}
-
     List<String> getTasks() {
-        def tasks = []
+        List<String> tasks = []
         for (timing in timings) {
             tasks.add(timing.path)
         }

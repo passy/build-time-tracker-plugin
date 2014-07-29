@@ -1,20 +1,20 @@
 package net.rdrei.android.buildtimetracker
 
-import net.rdrei.android.buildtimetracker.internal.TimingsListener
-import net.rdrei.android.buildtimetracker.reporters.PrintReporter
+import net.rdrei.android.buildtimetracker.internal.TimingRecorder
+import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 class BuildTimeTrackerPlugin implements Plugin<Project> {
     def REPORTERS = [
-        print: PrintReporter
+        summary: SummaryReporter
     ]
 
     @Override
     void apply(Project project) {
         def extension = project.extensions.create("buildtimetracker", BuildTimeTrackerConfig)
         def reporters = project.buildtimetracker.extensions.reporters = project.container(Reporter)
-        project.gradle.addBuildListener(new TimingsListener(reporters))
+        project.gradle.addBuildListener(new TimingRecorder(reporters))
     }
 }
 

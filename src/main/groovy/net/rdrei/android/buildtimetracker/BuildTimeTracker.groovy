@@ -1,16 +1,32 @@
 package net.rdrei.android.buildtimetracker
 
 import net.rdrei.android.buildtimetracker.internal.TimingsListener
+import net.rdrei.android.buildtimetracker.reporters.PrintReporter
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.logging.Logger
-import org.gradle.api.logging.Logging
-import org.gradle.api.tasks.StopExecutionException
 
 class BuildTimeTrackerPlugin implements Plugin<Project> {
-  final Logger log = Logging.getLogger BuildTimeTrackerPlugin
+    def REPORTERS = [
+        print: PrintReporter
+    ]
 
-  @Override void apply(Project project) {
-      project.getGradle().addBuildListener(new TimingsListener())
-  }
+    @Override
+    void apply(Project project) {
+        def extension = project.extensions.create("buildtimetracker", BuildTimeTrackerConfig)
+        project.buildtimetracker.extensions.reporters = project.container(Reporter)
+
+        project.gradle.addBuildListener(new TimingsListener())
+    }
+}
+
+class BuildTimeTrackerConfig {
+    boolean silent = false
+}
+
+class Reporter {
+    final String name
+
+    Reporter(String name) {
+        this.name = name
+    }
 }

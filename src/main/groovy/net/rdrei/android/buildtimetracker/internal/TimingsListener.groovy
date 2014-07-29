@@ -1,5 +1,6 @@
 package net.rdrei.android.buildtimetracker.internal
 
+import net.rdrei.android.buildtimetracker.reporters.BuildTimeTrackerReporter
 import org.gradle.BuildListener
 import org.gradle.BuildResult
 import org.gradle.api.Task
@@ -12,6 +13,10 @@ import org.gradle.util.Clock;
 class TimingsListener implements TaskExecutionListener, BuildListener {
     private Clock clock
     private timings = []
+    private reporters = []
+
+    TimingsListener() {
+    }
 
     @Override
     void beforeExecute(Task task) {

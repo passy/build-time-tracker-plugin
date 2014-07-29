@@ -103,26 +103,4 @@ class TimingsListenerTest {
             mockReporter.verify(proxyReporter)
         }
     }
-
-    @Test
-    void callsSummaryReporterOnBuildFinished() {
-        def mockSummaryReporter = new MockFor(SummaryReporter)
-        mockSummaryReporter.demand.run { timings ->
-            assertEquals 1, timings.size
-            assertEquals "test", timings.get(0).path
-            assertEquals 123, timings.get(0).ms
-        }
-
-        mockClock(123).use {
-            mockSummaryReporter.use {
-                def plugin = buildPlugin()
-                TimingRecorder listener = new TimingRecorder(plugin)
-                Task task = mockTask("test")
-
-                listener.beforeExecute(task)
-                listener.afterExecute(task, null)
-                listener.buildFinished(null)
-            }
-        }
-    }
 }

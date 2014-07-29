@@ -1,4 +1,4 @@
-package net.rdrei.android.buildtimetracker.internal
+package net.rdrei.android.buildtimetracker
 
 import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.TimingRecorder

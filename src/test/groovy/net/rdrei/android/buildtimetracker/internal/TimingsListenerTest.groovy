@@ -4,6 +4,7 @@ import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.BuildTimeTrackerPlugin
 import net.rdrei.android.buildtimetracker.ReporterExtension
 import net.rdrei.android.buildtimetracker.TimingRecorder
+import net.rdrei.android.buildtimetracker.reporters.BuildTimeTrackerReporter
 import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Task
@@ -80,20 +81,20 @@ class TimingsListenerTest {
 
     @Test
     void callsReportersOnBuildFinished() {
-        def mockReporter = new MockFor(ReporterExtension)
-        mockReporter.demand.getName(1..3) { "test-reporter" }
+        def mockReporter = new MockFor(BuildTimeTrackerReporter)
         mockReporter.demand.run { timings ->
             assertEquals 1, timings.size
             assertEquals "test", timings.get(0).path
             assertEquals 123, timings.get(0).ms
         }
+        def proxyReporter = mockReporter.proxyInstance([:])
+
+        def mockPlugin = new MockFor(BuildTimeTrackerPlugin)
+        mockPlugin.demand.getReporters { [ proxyReporter ] }
+        def proxyPlugin = mockPlugin.proxyInstance()
 
         mockClock(123).use {
-            NamedDomainObjectContainer<ReporterExtension> reporters = buildReporters()
-            def proxyReporter = mockReporter.proxyInstance()
-            reporters.add(proxyReporter)
-
-            TimingRecorder listener = new TimingRecorder(reporters)
+            TimingRecorder listener = new TimingRecorder(proxyPlugin)
             Task task = mockTask("test")
 
             listener.beforeExecute(task)
@@ -101,6 +102,7 @@ class TimingsListenerTest {
             listener.buildFinished(null)
 
             mockReporter.verify(proxyReporter)
+            mockPlugin.verify(proxyPlugin)
         }
     }
 }

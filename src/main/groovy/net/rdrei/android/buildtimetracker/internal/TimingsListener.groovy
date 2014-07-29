@@ -51,7 +51,7 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
             if (timing.ms >= 50) {
                 printf "%7sms  %s\n", timing
             }
-            total += timing[0]
+            total += timing.ms
         }
 
         printf "Total time wasted: %7sms\n", total

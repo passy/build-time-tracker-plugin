@@ -8,7 +8,17 @@ import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
-import org.gradle.util.Clock;
+import org.gradle.util.Clock
+
+class Timing {
+    long ms
+    String path
+
+    Timing(long ms, String path) {
+        this.ms = ms
+        this.path = path
+    }
+}
 
 class TimingsListener implements TaskExecutionListener, BuildListener {
     private Clock clock
@@ -20,13 +30,13 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
 
     @Override
     void beforeExecute(Task task) {
-        clock = new org.gradle.util.Clock()
+        clock = new Clock()
     }
 
     @Override
     void afterExecute(Task task, TaskState taskState) {
-        def ms = clock.timeInMs
-        timings.add([ms, task.path])
+        def timing = new Timing(clock.getTimeInMs(), task.getPath())
+        timings.add(timing)
     }
 
     @Override
@@ -34,7 +44,7 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
         def total = 0
         println "Task timings:"
         for (timing in timings) {
-            if (timing[0] >= 50) {
+            if (timing.ms >= 50) {
                 printf "%7sms  %s\n", timing
             }
             total += timing[0]
@@ -54,4 +64,23 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
 
     @Override
     void settingsEvaluated(Settings settings) {}
+
+    List<String> getTasks() {
+        def tasks = []
+        for (timing in timings) {
+            tasks.add(timing.path)
+        }
+
+        return tasks
+    }
+
+    Long getTiming(String path) {
+        for (timing in timings) {
+            if (timing.path == path) {
+                return timing.ms
+            }
+        }
+
+        return null
+    }
 }

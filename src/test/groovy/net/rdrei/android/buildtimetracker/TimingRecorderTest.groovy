@@ -4,7 +4,7 @@ import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.BuildTimeTrackerPlugin
 import net.rdrei.android.buildtimetracker.ReporterExtension
 import net.rdrei.android.buildtimetracker.TimingRecorder
-import net.rdrei.android.buildtimetracker.reporters.BuildTimeTrackerReporter
+import net.rdrei.android.buildtimetracker.reporters.AbstractBuildTimeTrackerReporter
 import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Task
@@ -81,7 +81,7 @@ class TimingRecorderTest {
 
     @Test
     void callsReportersOnBuildFinished() {
-        def mockReporter = new MockFor(BuildTimeTrackerReporter)
+        def mockReporter = new MockFor(AbstractBuildTimeTrackerReporter)
         mockReporter.demand.run { timings ->
             assertEquals 1, timings.size
             assertEquals "test", timings.get(0).path

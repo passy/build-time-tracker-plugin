@@ -23,7 +23,6 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
             writer.writeNext(headers)
         }
 
-        def total = 0
         timings.eachWithIndex { timing, idx ->
             String[] line = [
                     start.toString(),
@@ -32,17 +31,7 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
                     timing.ms.toString()
             ].toArray()
             writer.writeNext(line)
-
-            total += timing.ms
         }
-
-        String[] footer = [
-                start.toString(),
-                "*",
-                "total",
-                total.toString()
-        ].toArray()
-        writer.writeNext(footer)
 
         writer.close()
     }

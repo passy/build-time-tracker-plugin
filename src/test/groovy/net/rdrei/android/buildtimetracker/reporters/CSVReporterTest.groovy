@@ -192,31 +192,4 @@ class CSVReporterTest {
         assertNotNull(line)
         assertEquals("1", line[1])
     }
-
-    @Test
-    void includesTotalBuildtimeInOutputCSV() {
-        CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
-
-        reporter.run(1234, [
-                new Timing(100, "task1"),
-                new Timing(200, "task2")
-        ])
-
-        CSVReader reader = new CSVReader(new FileReader("buildtime/test.csv"))
-
-        Iterator<String[]> lines = reader.readAll().iterator()
-
-        // Skip the header and tasks
-        lines.next()
-        lines.next()
-        lines.next()
-
-        // Verify total line
-        String[] total = lines.next()
-        assertNotNull(total)
-        assertEquals("1234", total[0])
-        assertEquals("*", total[1])
-        assertEquals("total", total[2])
-        assertEquals("300", total[3])
-    }
 }

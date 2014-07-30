@@ -4,6 +4,8 @@ import au.com.bytecode.opencsv.CSVWriter
 import java.io.File
 import java.io.FileWriter
 import net.rdrei.android.buildtimetracker.Timing
+import org.gradle.internal.TimeProvider
+import org.gradle.internal.TrueTimeProvider
 
 class CSVReporter extends AbstractBuildTimeTrackerReporter {
     CSVReporter(Map<String, String> options) {
@@ -11,7 +13,8 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
     }
 
     @Override
-    def run(long start, List<Timing> timings) {
+    def run(List<Timing> timings) {
+        long timestamp = new TrueTimeProvider().getCurrentTime()
         String output = getOption("output", "")
         boolean append = getOption("append", "false").toBoolean()
 
@@ -26,7 +29,7 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
 
         timings.eachWithIndex { timing, idx ->
             String[] line = [
-                    start.toString(),
+                    timestamp.toString(),
                     idx.toString(),
                     timing.path,
                     timing.success.toString(),

@@ -25,7 +25,6 @@ class Timing {
 
 class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
     private Clock clock
-    private long start
     private List<Timing> timings = []
     private BuildTimeTrackerPlugin plugin
 
@@ -36,7 +35,6 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     @Override
     void buildStarted(Gradle gradle) {
         clock = new Clock()
-        start = clock.getTimeInMs()
     }
 
     @Override
@@ -54,7 +52,7 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     @Override
     void buildFinished(BuildResult result) {
         plugin.reporters.each { reporter ->
-            reporter.run(start, timings)
+            reporter.run(timings)
         }
     }
 
@@ -75,9 +73,5 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
         }
 
         null
-    }
-
-    long getStart() {
-        start
     }
 }

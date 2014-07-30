@@ -24,7 +24,7 @@ class Timing {
 }
 
 class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
-    private final Clock clock = new Clock()
+    private Clock clock
     private List<Timing> timings = []
     private BuildTimeTrackerPlugin plugin
 
@@ -33,11 +33,16 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     }
 
     @Override
+    void beforeExecute(Task task) {
+        clock = new Clock()
+    }
+
+    @Override
     void afterExecute(Task task, TaskState taskState) {
         def timing = new Timing(
                 clock.getTimeInMs(),
                 task.getPath(),
-                taskState.getFailure() != null,
+                taskState.getFailure() == null,
                 taskState.getDidWork(),
                 taskState.getSkipped()
         )

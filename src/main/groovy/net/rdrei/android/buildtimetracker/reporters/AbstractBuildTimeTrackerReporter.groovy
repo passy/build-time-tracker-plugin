@@ -9,9 +9,9 @@ abstract class AbstractBuildTimeTrackerReporter {
         this.options = options
     }
 
-    public abstract run(List<Timing> timings)
+    abstract run(List<Timing> timings)
 
-    public String getOption(String name, String defaultVal) {
+    String getOption(String name, String defaultVal) {
         options[name] == null ? defaultVal : options[name]
     }
 }

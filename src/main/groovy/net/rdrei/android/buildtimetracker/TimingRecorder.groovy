@@ -46,32 +46,19 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
                 taskState.getDidWork(),
                 taskState.getSkipped()
         )
-        timings.add(timing)
+        timings << timing
     }
 
     @Override
     void buildFinished(BuildResult result) {
-        plugin.reporters.each { reporter ->
-            reporter.run(timings)
-        }
+        plugin.reporters.each { it.run timings }
     }
 
     List<String> getTasks() {
-        List<String> tasks = []
-        for (timing in timings) {
-            tasks.add(timing.path)
-        }
-
-        tasks
+        timings*.path
     }
 
-    Long getTiming(String path) {
-        for (timing in timings) {
-            if (timing.path == path) {
-                return timing.ms
-            }
-        }
-
-        null
+    Timing getTiming(String path) {
+        timings.find { it.path == path }
     }
 }

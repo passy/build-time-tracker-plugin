@@ -17,25 +17,25 @@ buildscript {
   dependencies {
     classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.1.+'
   }
-
-  buildtimetracker {
-    reporters {
-      csv {
-        output "buildtime/${date}.csv"
-        append "true"
-        header "false"
-      }
-
-      scribe {
-        endpoint "https://example.com/scribe"
-      }
-
-      summary {}
-    }
-  }
 }
 
 apply plugin: 'build-time-tracker'
+
+buildtimetracker {
+  reporters {
+    csv {
+      output "buildtime/${date}.csv"
+      append "true"
+      header "false"
+    }
+
+    scribe {
+      endpoint "https://example.com/scribe"
+    }
+
+    summary {}
+  }
+}
 ```
 
 On an initial run, the output will look something like this:

@@ -13,10 +13,11 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
     @Override
     def run(long start, List<Timing> timings) {
         String output = getOption("output")
+        boolean append = getOption("append") == "true"
 
-        File file = new File(output);
-        file.getParentFile().mkdirs();
-        CSVWriter writer = new CSVWriter(new FileWriter(file))
+        File file = new File(output)
+        file.getParentFile().mkdirs()
+        CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, append)))
 
         if (getOption("header") != "false") {
             String[] headers = ["timestamp", "order", "task", "ms"].toArray()

@@ -1,11 +1,13 @@
 package net.rdrei.android.buildtimetracker.reporters
 
 import au.com.bytecode.opencsv.CSVReader
-import org.junit.After
-
+import java.io.BufferedWriter
 import java.io.File
 import java.io.FileReader
+import java.io.FileWriter
+import java.io.PrintWriter
 import net.rdrei.android.buildtimetracker.Timing
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -60,10 +62,13 @@ class CSVReporterTest {
 
         String[] header = reader.readNext()
         assertNotNull(header)
+        assertEquals(4, header.length)
         assertEquals("timestamp", header[0])
         assertEquals("order", header[1])
         assertEquals("task", header[2])
         assertEquals("ms", header[3])
+
+        reader.close()
     }
 
     @Test
@@ -82,10 +87,13 @@ class CSVReporterTest {
 
         String[] header = reader.readNext()
         assertNotNull(header)
+        assertEquals(4, header.length)
         assertEquals("timestamp", header[0])
         assertEquals("order", header[1])
         assertEquals("task", header[2])
         assertEquals("ms", header[3])
+
+        reader.close()
     }
 
     @Test
@@ -104,10 +112,13 @@ class CSVReporterTest {
 
         String[] line = reader.readNext()
         assertNotNull(line)
+        assertEquals(4, line.length)
         assertNotEquals("timestamp", line[0])
         assertNotEquals("order", line[1])
         assertNotEquals("task", line[2])
         assertNotEquals("ms", line[3])
+
+        reader.close()
     }
 
     @Test
@@ -129,14 +140,18 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull(line)
+        assertEquals(4, line.length)
         assertEquals("task1", line[2])
         assertEquals("100", line[3])
 
         // Verify second task
         line = lines.next()
         assertNotNull(line)
+        assertEquals(4, line.length)
         assertEquals("task2", line[2])
         assertEquals("200", line[3])
+
+        reader.close()
     }
 
     @Test
@@ -158,12 +173,16 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull(line)
+        assertEquals(4, line.length)
         assertEquals("1234", line[0])
 
         // Verify second task
         line = lines.next()
         assertNotNull(line)
+        assertEquals(4, line.length)
         assertEquals("1234", line[0])
+
+        reader.close()
     }
 
     @Test
@@ -185,11 +204,61 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull(line)
+        assertEquals(4, line.length)
         assertEquals("0", line[1])
 
         // Verify second task
         line = lines.next()
         assertNotNull(line)
+        assertEquals(4, line.length)
         assertEquals("1", line[1])
+
+        reader.close()
+    }
+
+    @Test
+    void appendsCSV() {
+        File file = new File("buildtime/test.csv");
+        file.getParentFile().mkdirs()
+        PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)))
+        writer.println("existing content")
+        writer.close()
+
+        CSVReporter reporter = new CSVReporter([
+                output: "buildtime/test.csv",
+                append: "true",
+                header: "false"
+        ])
+
+        reporter.run(1234, [
+                new Timing(100, "task1"),
+                new Timing(200, "task2")
+        ])
+
+        CSVReader reader = new CSVReader(new FileReader("buildtime/test.csv"))
+
+        Iterator<String[]> lines = reader.readAll().iterator()
+
+        // Verify existing content
+        String[] line = lines.next()
+        assertNotNull(line)
+        assertEquals(1, line.length)
+        assertEquals("existing content", line[0])
+
+        // Verify first task
+        line = lines.next()
+        assertNotNull(line)
+        assertEquals(4, line.length)
+        assertEquals("task1", line[2])
+        assertEquals("100", line[3])
+
+        // Verify second task
+        line = lines.next()
+        assertNotNull(line)
+        assertEquals(4, line.length)
+        assertEquals("task2", line[2])
+        assertEquals("200", line[3])
+
+        reader.close()
     }
 }

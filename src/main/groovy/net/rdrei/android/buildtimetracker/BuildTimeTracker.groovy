@@ -49,9 +49,9 @@ class ReporterExtension {
     }
 
     def methodMissing(String name, args) {
-        // I'm feeling really naughty.
-        if (args.length == 1 && args[0] instanceof String) {
-            options[name] = args[0]
+        // I'm feeling really, really naughty.
+        if (args.length == 1) {
+            options[name] = args[0].toString()
         } else {
             throw new MissingMethodException(name, this.class, args)
         }

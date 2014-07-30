@@ -75,34 +75,6 @@ class CSVReporterTest {
     }
 
     @Test
-    void writesHeaderToOutputCSVWhenHeaderOptionNotFalse() {
-        CSVReporter reporter = new CSVReporter([
-                output: "buildtime/test.csv",
-                header: "something not false"
-        ])
-
-        reporter.run(1234, [
-                new Timing(100, "task1", true, false, true),
-                new Timing(200, "task2", false, true, false)
-        ])
-
-        CSVReader reader = new CSVReader(new FileReader("buildtime/test.csv"))
-
-        String[] header = reader.readNext()
-        assertNotNull(header)
-        assertEquals(7, header.length)
-        assertEquals("timestamp", header[0])
-        assertEquals("order", header[1])
-        assertEquals("task", header[2])
-        assertEquals("success", header[3])
-        assertEquals("did_work", header[4])
-        assertEquals("skipped", header[5])
-        assertEquals("ms", header[6])
-
-        reader.close()
-    }
-
-    @Test
     void doesNotWritesHeaderToOutputCSVWhenHeaderOptionFalse() {
         CSVReporter reporter = new CSVReporter([
                 output: "buildtime/test.csv",

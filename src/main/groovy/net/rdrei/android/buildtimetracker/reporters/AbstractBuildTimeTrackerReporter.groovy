@@ -11,7 +11,7 @@ abstract class AbstractBuildTimeTrackerReporter {
 
     public abstract run(long start, List<Timing> timings)
 
-    public String getOption(String name) {
-        return options[name]
+    public String getOption(String name, String defaultVal) {
+        options[name] == null ? defaultVal : options[name]
     }
 }

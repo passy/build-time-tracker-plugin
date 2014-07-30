@@ -1,7 +1,8 @@
 package net.rdrei.android.buildtimetracker
 
-import net.rdrei.android.buildtimetracker.internal.TimingRecorder
+import net.rdrei.android.buildtimetracker.reporters.AbstractBuildTimeTrackerReporter
 import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
+import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -10,27 +11,47 @@ class BuildTimeTrackerPlugin implements Plugin<Project> {
         summary: SummaryReporter
     ]
 
+    NamedDomainObjectCollection<ReporterExtension> reporterExtensions
+
     @Override
     void apply(Project project) {
-        def extension = project.extensions.create("buildtimetracker", BuildTimeTrackerConfig)
-        def reporters = project.buildtimetracker.extensions.reporters = project.container(Reporter)
-        project.gradle.addBuildListener(new TimingRecorder(reporters))
+        project.extensions.create("buildtimetracker", BuildTimeTrackerExtension)
+        reporterExtensions = project.buildtimetracker.extensions.reporters = project.container(ReporterExtension)
+        project.gradle.addBuildListener(new TimingRecorder(this))
+    }
+
+    List<AbstractBuildTimeTrackerReporter> getReporters() {
+        reporterExtensions.collect { ext ->
+            if (REPORTERS.containsKey(ext.name)) {
+                return REPORTERS.get(ext.name).newInstance(ext.options)
+            }
+        }.findAll { ext -> ext != null }
     }
 }
 
-class BuildTimeTrackerConfig {
-    boolean silent = false
+class BuildTimeTrackerExtension {
+    // Not in use at the moment.
 }
 
-class Reporter {
+class ReporterExtension {
     final String name
+    final Map<String, String> options = [:]
 
-    Reporter(String name) {
+    ReporterExtension(String name) {
         this.name = name
     }
 
     @Override
     String toString() {
         return name
+    }
+
+    def methodMissing(String name, args) {
+        // I'm feeling really naughty.
+        if (args.length == 1 && args[0] instanceof String) {
+            options[name] = args[0]
+        } else {
+            throw new MissingMethodException(name, this.class, args)
+        }
     }
 }

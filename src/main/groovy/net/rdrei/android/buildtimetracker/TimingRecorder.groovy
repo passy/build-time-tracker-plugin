@@ -1,17 +1,10 @@
-package net.rdrei.android.buildtimetracker.internal
+package net.rdrei.android.buildtimetracker
 
-import net.rdrei.android.buildtimetracker.BuildListenerAdapter
-import net.rdrei.android.buildtimetracker.BuildTimeTrackerConfig
-import net.rdrei.android.buildtimetracker.Reporter
-import net.rdrei.android.buildtimetracker.reporters.BuildTimeTrackerReporter
 import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
-import org.gradle.BuildListener
 import org.gradle.BuildResult
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
-import org.gradle.api.initialization.Settings
-import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
 import org.gradle.util.Clock
 
@@ -27,11 +20,11 @@ class Timing {
 
 class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListener {
     private Clock clock
-    private timings = []
-    private NamedDomainObjectContainer<Reporter> reporters
+    private List<Timing> timings = []
+    private BuildTimeTrackerPlugin plugin
 
-    TimingRecorder(NamedDomainObjectContainer<Reporter> reporters) {
-        this.reporters = reporters
+    TimingRecorder(BuildTimeTrackerPlugin plugin) {
+        this.plugin = plugin
     }
 
     @Override
@@ -47,14 +40,9 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
 
     @Override
     void buildFinished(BuildResult result) {
-        println "REPORTERS:" + reporters
-        reporters.each { reporter ->
+        plugin.reporters.each { reporter ->
             reporter.run(timings)
-            printf "reporter: %s", reporter
         }
-
-        // TODO: Add using DSL syntax eventually.
-        new SummaryReporter().run(timings)
     }
 
     List<String> getTasks() {

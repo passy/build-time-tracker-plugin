@@ -2,13 +2,10 @@ package net.rdrei.android.buildtimetracker
 
 import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.BuildTimeTrackerPlugin
-import net.rdrei.android.buildtimetracker.ReporterExtension
 import net.rdrei.android.buildtimetracker.TimingRecorder
 import net.rdrei.android.buildtimetracker.reporters.AbstractBuildTimeTrackerReporter
-import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Task
-import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.api.tasks.TaskState
 import org.gradle.util.Clock
 import org.junit.Test
 
@@ -30,8 +27,12 @@ class TimingRecorderTest {
         mockClock
     }
 
-    NamedDomainObjectContainer<ReporterExtension> buildReporters() {
-        new ProjectBuilder().build().container(ReporterExtension)
+    MockFor mockClock(int start, int task) {
+        def mockClock = new MockFor(Clock)
+        mockClock.demand.getTimeInMs { start }
+        mockClock.demand.getTimeInMs { task }
+
+        mockClock
     }
 
     BuildTimeTrackerPlugin buildPlugin() {
@@ -39,14 +40,29 @@ class TimingRecorderTest {
     }
 
     @Test
-    void recordsTaskPaths() {
-        mockClock(0).use {
+    void recordStartTimeOnBuildStarted() {
+        mockClock(123).use {
             def plugin = buildPlugin()
             TimingRecorder listener = new TimingRecorder(plugin)
             Task task = mockTask("test")
 
+            listener.buildStarted(null)
+
+            assertEquals(123, listener.getStart())
+        }
+    }
+
+    @Test
+    void recordsTaskPaths() {
+        mockClock(0, 0).use {
+            def plugin = buildPlugin()
+            TimingRecorder listener = new TimingRecorder(plugin)
+            Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
+
+            listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
 
             assertEquals(["test"], listener.getTasks())
         }
@@ -54,12 +70,14 @@ class TimingRecorderTest {
 
     @Test
     void recordsTaskTiming() {
-        mockClock(123).use {
+        mockClock(0, 123).use {
             TimingRecorder listener = new TimingRecorder()
             Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
 
+            listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
 
             assertEquals(123, listener.getTiming("test"))
         }
@@ -67,14 +85,16 @@ class TimingRecorderTest {
 
     @Test
     void buildFinishes() {
-        mockClock(0).use {
+        mockClock(0, 0).use {
             def plugin = buildPlugin()
 
             TimingRecorder listener = new TimingRecorder(plugin)
             Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
 
+            listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
             listener.buildFinished(null)
         }
     }
@@ -82,7 +102,7 @@ class TimingRecorderTest {
     @Test
     void callsReportersOnBuildFinished() {
         def mockReporter = new MockFor(AbstractBuildTimeTrackerReporter)
-        mockReporter.demand.run { timings ->
+        mockReporter.demand.run { start, timings ->
             assertEquals 1, timings.size
             assertEquals "test", timings.get(0).path
             assertEquals 123, timings.get(0).ms
@@ -93,12 +113,14 @@ class TimingRecorderTest {
         mockPlugin.demand.getReporters { [ proxyReporter ] }
         def proxyPlugin = mockPlugin.proxyInstance()
 
-        mockClock(123).use {
+        mockClock(0, 123).use {
             TimingRecorder listener = new TimingRecorder(proxyPlugin)
             Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
 
+            listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
             listener.buildFinished(null)
 
             mockReporter.verify(proxyReporter)

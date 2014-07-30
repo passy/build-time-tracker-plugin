@@ -1,25 +1,31 @@
 package net.rdrei.android.buildtimetracker
 
-import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
 import org.gradle.BuildResult
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
 import org.gradle.util.Clock
 
 class Timing {
     long ms
     String path
+    boolean success
+    boolean didWork
+    boolean skipped
 
-    Timing(long ms, String path) {
+    Timing(long ms, String path, boolean success, boolean didWork, boolean skipped) {
         this.ms = ms
         this.path = path
+        this.success = success
+        this.didWork = didWork
+        this.skipped = skipped
     }
 }
 
-class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListener {
+class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
     private Clock clock
+    private long start
     private List<Timing> timings = []
     private BuildTimeTrackerPlugin plugin
 
@@ -28,20 +34,27 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
     }
 
     @Override
-    void beforeExecute(Task task) {
+    void buildStarted(Gradle gradle) {
         clock = new Clock()
+        start = clock.getTimeInMs()
     }
 
     @Override
     void afterExecute(Task task, TaskState taskState) {
-        def timing = new Timing(clock.getTimeInMs(), task.getPath())
+        def timing = new Timing(
+                clock.getTimeInMs(),
+                task.getPath(),
+                taskState.getFailure() != null,
+                taskState.getDidWork(),
+                taskState.getSkipped()
+        )
         timings.add(timing)
     }
 
     @Override
     void buildFinished(BuildResult result) {
         plugin.reporters.each { reporter ->
-            reporter.run(timings)
+            reporter.run(start, timings)
         }
     }
 
@@ -51,7 +64,7 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
             tasks.add(timing.path)
         }
 
-        return tasks
+        tasks
     }
 
     Long getTiming(String path) {
@@ -61,6 +74,10 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
             }
         }
 
-        return null
+        null
+    }
+
+    long getStart() {
+        start
     }
 }

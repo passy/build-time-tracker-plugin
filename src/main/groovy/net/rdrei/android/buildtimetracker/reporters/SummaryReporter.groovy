@@ -8,7 +8,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
     }
 
     @Override
-    def run(long start, List<Timing> timings) {
+    def run(List<Timing> timings) {
         def total = 0
         println "Task timings:"
         for (timing in timings) {

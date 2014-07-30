@@ -1,6 +1,10 @@
 package net.rdrei.android.buildtimetracker.reporters
 
 import au.com.bytecode.opencsv.CSVReader
+import groovy.mock.interceptor.MockFor
+import org.gradle.internal.TimeProvider
+import org.gradle.internal.TrueTimeProvider
+
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileReader
@@ -40,7 +44,7 @@ class CSVReporterTest {
     void createsOutputCSV() {
         CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -53,7 +57,7 @@ class CSVReporterTest {
     void writesHeaderToOutputCSV() {
         CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -81,7 +85,7 @@ class CSVReporterTest {
                 header: "false"
         ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -106,7 +110,7 @@ class CSVReporterTest {
     void writesTimingsToOutputCSV() {
         CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -137,40 +141,45 @@ class CSVReporterTest {
 
     @Test
     void includesBuildTimestampInOutputCSVRows() {
-        CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
+        def mockTimeProvider = new MockFor(TrueTimeProvider)
+        mockTimeProvider.demand.getCurrentTime { 1234 }
 
-        reporter.run(1234, [
-                new Timing(100, "task1", true, false, true),
-                new Timing(200, "task2", false, true, false)
-        ])
+        mockTimeProvider.use {
+            CSVReporter reporter = new CSVReporter([output: "buildtime/test.csv"])
 
-        CSVReader reader = new CSVReader(new FileReader("buildtime/test.csv"))
+            reporter.run([
+                    new Timing(100, "task1", true, false, true),
+                    new Timing(200, "task2", false, true, false)
+            ])
 
-        Iterator<String[]> lines = reader.readAll().iterator()
+            CSVReader reader = new CSVReader(new FileReader("buildtime/test.csv"))
 
-        // Skip the header
-        lines.next()
+            Iterator<String[]> lines = reader.readAll().iterator()
 
-        // Verify first task
-        String[] line = lines.next()
-        assertNotNull(line)
-        assertEquals(7, line.length)
-        assertEquals("1234", line[0])
+            // Skip the header
+            lines.next()
 
-        // Verify second task
-        line = lines.next()
-        assertNotNull(line)
-        assertEquals(7, line.length)
-        assertEquals("1234", line[0])
+            // Verify first task
+            String[] line = lines.next()
+            assertNotNull(line)
+            assertEquals(7, line.length)
+            assertEquals("1234", line[0])
 
-        reader.close()
+            // Verify second task
+            line = lines.next()
+            assertNotNull(line)
+            assertEquals(7, line.length)
+            assertEquals("1234", line[0])
+
+            reader.close()
+        }
     }
 
     @Test
     void includesTaskOrderInOutputCSVRows() {
         CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -201,7 +210,7 @@ class CSVReporterTest {
     void includesTaskSuccessInOutputCSVRows() {
         CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -232,7 +241,7 @@ class CSVReporterTest {
     void includesTaskDidWorkInOutputCSVRows() {
         CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -263,7 +272,7 @@ class CSVReporterTest {
     void includesTaskSkippedInOutputCSVRows() {
         CSVReporter reporter = new CSVReporter([ output: "buildtime/test.csv" ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])
@@ -304,7 +313,7 @@ class CSVReporterTest {
                 header: "false"
         ])
 
-        reporter.run(1234, [
+        reporter.run([
                 new Timing(100, "task1", true, false, true),
                 new Timing(200, "task2", false, true, false)
         ])

@@ -10,14 +10,20 @@ import org.gradle.util.Clock
 class Timing {
     long ms
     String path
+    boolean success
+    boolean didWork
+    boolean skipped
 
-    Timing(long ms, String path) {
+    Timing(long ms, String path, boolean success, boolean didWork, boolean skipped) {
         this.ms = ms
         this.path = path
+        this.success = success
+        this.didWork = didWork
+        this.skipped = skipped
     }
 }
 
-class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListener {
+class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
     private Clock clock
     private long start
     private List<Timing> timings = []
@@ -34,13 +40,14 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
     }
 
     @Override
-    void beforeExecute(Task task) {
-        clock = new Clock()
-    }
-
-    @Override
     void afterExecute(Task task, TaskState taskState) {
-        def timing = new Timing(clock.getTimeInMs(), task.getPath())
+        def timing = new Timing(
+                clock.getTimeInMs(),
+                task.getPath(),
+                taskState.getFailure() != null,
+                taskState.getDidWork(),
+                taskState.getSkipped()
+        )
         timings.add(timing)
     }
 
@@ -70,7 +77,7 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
         null
     }
 
-    Long getStart() {
+    long getStart() {
         start
     }
 }

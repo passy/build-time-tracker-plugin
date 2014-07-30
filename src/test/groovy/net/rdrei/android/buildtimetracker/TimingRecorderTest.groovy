@@ -5,6 +5,7 @@ import net.rdrei.android.buildtimetracker.BuildTimeTrackerPlugin
 import net.rdrei.android.buildtimetracker.TimingRecorder
 import net.rdrei.android.buildtimetracker.reporters.AbstractBuildTimeTrackerReporter
 import org.gradle.api.Task
+import org.gradle.api.tasks.TaskState
 import org.gradle.util.Clock
 import org.junit.Test
 
@@ -38,7 +39,6 @@ class TimingRecorderTest {
         new BuildTimeTrackerPlugin()
     }
 
-
     @Test
     void recordStartTimeOnBuildStarted() {
         mockClock(123).use {
@@ -58,10 +58,11 @@ class TimingRecorderTest {
             def plugin = buildPlugin()
             TimingRecorder listener = new TimingRecorder(plugin)
             Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
 
             listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
 
             assertEquals(["test"], listener.getTasks())
         }
@@ -72,10 +73,11 @@ class TimingRecorderTest {
         mockClock(0, 123).use {
             TimingRecorder listener = new TimingRecorder()
             Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
 
             listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
 
             assertEquals(123, listener.getTiming("test"))
         }
@@ -88,10 +90,11 @@ class TimingRecorderTest {
 
             TimingRecorder listener = new TimingRecorder(plugin)
             Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
 
             listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
             listener.buildFinished(null)
         }
     }
@@ -113,10 +116,11 @@ class TimingRecorderTest {
         mockClock(0, 123).use {
             TimingRecorder listener = new TimingRecorder(proxyPlugin)
             Task task = mockTask("test")
+            TaskState state = new TaskStateBuilder().build()
 
             listener.buildStarted(null)
             listener.beforeExecute(task)
-            listener.afterExecute(task, null)
+            listener.afterExecute(task, state)
             listener.buildFinished(null)
 
             mockReporter.verify(proxyReporter)

@@ -20,7 +20,7 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
         CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, append)))
 
         if (getOption("header") != "false") {
-            String[] headers = ["timestamp", "order", "task", "ms"].toArray()
+            String[] headers = ["timestamp", "order", "task", "success", "did_work", "skipped", "ms"]
             writer.writeNext(headers)
         }
 
@@ -29,6 +29,9 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
                     start.toString(),
                     idx.toString(),
                     timing.path,
+                    timing.success.toString(),
+                    timing.didWork.toString(),
+                    timing.skipped.toString(),
                     timing.ms.toString()
             ].toArray()
             writer.writeNext(line)

@@ -24,17 +24,12 @@ class Timing {
 }
 
 class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
-    private Clock clock
+    private final Clock clock = new Clock()
     private List<Timing> timings = []
     private BuildTimeTrackerPlugin plugin
 
     TimingRecorder(BuildTimeTrackerPlugin plugin) {
         this.plugin = plugin
-    }
-
-    @Override
-    void buildStarted(Gradle gradle) {
-        clock = new Clock()
     }
 
     @Override

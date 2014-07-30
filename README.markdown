@@ -54,6 +54,12 @@ The `csv` reporter takes the following options:
    include a prepended header row with column names. Is desireable in
    conjunction with `append`.
 
+_Note_ This plugin only measures the task times that constitute a build.
+Specifically, it does not measure the time in configuration at the start
+of a Gradle run. This means that the time to execute a build with very fast
+tasks is not accurately represented in output because it is dominated by
+the time in configuration instead.
+
 
 Developing
 ----------

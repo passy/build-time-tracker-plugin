@@ -36,12 +36,12 @@ class TimingRecorderTest {
         mockClock(0).use {
             def plugin = buildPlugin()
             TimingRecorder listener = new TimingRecorder(plugin)
-            Task task = mockTask("test")
+            Task task = mockTask "test"
             TaskState state = new TaskStateBuilder().build()
 
-            listener.buildStarted(null)
-            listener.beforeExecute(task)
-            listener.afterExecute(task, state)
+            listener.buildStarted null
+            listener.beforeExecute task
+            listener.afterExecute task, state
 
             assertEquals(["test"], listener.getTasks())
         }
@@ -51,14 +51,15 @@ class TimingRecorderTest {
     void recordsTaskTiming() {
         mockClock(123).use {
             TimingRecorder listener = new TimingRecorder()
-            Task task = mockTask("test")
+            Task task = mockTask "test"
             TaskState state = new TaskStateBuilder().build()
 
-            listener.buildStarted(null)
-            listener.beforeExecute(task)
-            listener.afterExecute(task, state)
+            listener.buildStarted null
+            listener.beforeExecute task
+            listener.afterExecute task, state
 
-            assertEquals(123, listener.getTiming("test"))
+            Timing timing = listener.getTiming "test"
+            assertEquals 123, timing.ms
         }
     }
 
@@ -68,13 +69,13 @@ class TimingRecorderTest {
             def plugin = buildPlugin()
 
             TimingRecorder listener = new TimingRecorder(plugin)
-            Task task = mockTask("test")
+            Task task = mockTask "test"
             TaskState state = new TaskStateBuilder().build()
 
-            listener.buildStarted(null)
-            listener.beforeExecute(task)
-            listener.afterExecute(task, state)
-            listener.buildFinished(null)
+            listener.buildStarted null
+            listener.beforeExecute task
+            listener.afterExecute task, state
+            listener.buildFinished null
         }
     }
 
@@ -94,16 +95,16 @@ class TimingRecorderTest {
 
         mockClock(123).use {
             TimingRecorder listener = new TimingRecorder(proxyPlugin)
-            Task task = mockTask("test")
+            Task task = mockTask "test"
             TaskState state = new TaskStateBuilder().build()
 
-            listener.buildStarted(null)
-            listener.beforeExecute(task)
-            listener.afterExecute(task, state)
-            listener.buildFinished(null)
+            listener.buildStarted null
+            listener.beforeExecute task
+            listener.afterExecute task, state
+            listener.buildFinished null
 
-            mockReporter.verify(proxyReporter)
-            mockPlugin.verify(proxyPlugin)
+            mockReporter.verify proxyReporter
+            mockPlugin.verify proxyPlugin
         }
     }
 }

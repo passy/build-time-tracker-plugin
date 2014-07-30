@@ -1,8 +1,6 @@
 package net.rdrei.android.buildtimetracker.reporters
 
 import au.com.bytecode.opencsv.CSVWriter
-import java.io.File
-import java.io.FileWriter
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.internal.TimeProvider
 import org.gradle.internal.TrueTimeProvider
@@ -19,7 +17,8 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
         boolean append = getOption("append", "false").toBoolean()
 
         File file = new File(output)
-        file.getParentFile().mkdirs()
+        file.getParentFile()?.mkdirs()
+
         CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, append)))
 
         if (getOption("header", "true").toBoolean()) {

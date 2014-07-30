@@ -21,14 +21,13 @@ class PluginTest {
 
     @Before
     void setUp() {
-        project = ProjectBuilder.builder()
-                .build()
+        project = ProjectBuilder.builder().build()
     }
 
     @Test
     void testSummaryInvocation() {
         def mockSummaryReporter = new MockFor(SummaryReporter)
-        mockSummaryReporter.demand.run { start, timings ->
+        mockSummaryReporter.demand.run { timings ->
             assertEquals 1, timings.size
             assertEquals "test", timings.get(0).path
             assertEquals 123, timings.get(0).ms
@@ -49,7 +48,7 @@ class PluginTest {
     void testCSVInvocation() {
         def mockCSVReporter = new MockFor(CSVReporter)
         // TODO: Demand the constructor is called with output and header options
-        mockCSVReporter.demand.run { start, timings ->
+        mockCSVReporter.demand.run { timings ->
             assertEquals 1, timings.size
             assertEquals "test", timings.get(0).path
             assertEquals 123, timings.get(0).ms
@@ -62,7 +61,8 @@ class PluginTest {
                 reporters {
                     csv {
                         output "buildtime/output.csv"
-                        header "false"
+                        header false
+                        append true
                     }
                 }
             }

@@ -1,10 +1,9 @@
 package net.rdrei.android.buildtimetracker
 
-import net.rdrei.android.buildtimetracker.reporters.SummaryReporter
 import org.gradle.BuildResult
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
 import org.gradle.util.Clock
 
@@ -20,11 +19,18 @@ class Timing {
 
 class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListener {
     private Clock clock
+    private long start
     private List<Timing> timings = []
     private BuildTimeTrackerPlugin plugin
 
     TimingRecorder(BuildTimeTrackerPlugin plugin) {
         this.plugin = plugin
+    }
+
+    @Override
+    void buildStarted(Gradle gradle) {
+        clock = new Clock()
+        start = clock.getTimeInMs()
     }
 
     @Override
@@ -41,7 +47,7 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
     @Override
     void buildFinished(BuildResult result) {
         plugin.reporters.each { reporter ->
-            reporter.run(timings)
+            reporter.run(start, timings)
         }
     }
 
@@ -51,7 +57,7 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
             tasks.add(timing.path)
         }
 
-        return tasks
+        tasks
     }
 
     Long getTiming(String path) {
@@ -61,6 +67,10 @@ class TimingRecorder extends BuildListenerAdapter implements TaskExecutionListen
             }
         }
 
-        return null
+        null
+    }
+
+    Long getStart() {
+        start
     }
 }

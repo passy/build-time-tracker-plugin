@@ -21,6 +21,7 @@ dependencies {
   compile localGroovy()
   compile 'org.rauschig:jarchivelib:0.6.0'
   compile 'commons-io:commons-io:2.4'
+  compile 'net.sf.opencsv:opencsv:2.3'
 
   testCompile 'junit:junit:4.11'
 }

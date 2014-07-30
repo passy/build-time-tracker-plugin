@@ -9,33 +9,33 @@ class TestTaskState implements TaskState {
     boolean skipped = false
     String skipMessage = null
 
-    @java.lang.Override
+    @Override
     boolean getExecuted() {
         executed
     }
 
-    @java.lang.Override
-    java.lang.Throwable getFailure() {
+    @Override
+    Throwable getFailure() {
         failure
     }
 
-    @java.lang.Override
+    @Override
     void rethrowFailure() {
         throw failure
     }
 
-    @java.lang.Override
+    @Override
     boolean getDidWork() {
         didWork
     }
 
-    @java.lang.Override
+    @Override
     boolean getSkipped() {
         skipped
     }
 
-    @java.lang.Override
-    java.lang.String getSkipMessage() {
+    @Override
+    String getSkipMessage() {
         skipMessage
     }
 }

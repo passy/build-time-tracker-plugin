@@ -5,8 +5,6 @@ import net.rdrei.android.buildtimetracker.Timing
 class SummaryReporter extends AbstractBuildTimeTrackerReporter {
     SummaryReporter(Map<String, String> options) {
         super(options)
-
-        println "Options received: $options"
     }
 
     @Override

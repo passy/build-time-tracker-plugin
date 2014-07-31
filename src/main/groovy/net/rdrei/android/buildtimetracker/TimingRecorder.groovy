@@ -39,14 +39,13 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
 
     @Override
     void afterExecute(Task task, TaskState taskState) {
-        def timing = new Timing(
+        timings << new Timing(
                 clock.getTimeInMs(),
                 task.getPath(),
                 taskState.getFailure() == null,
                 taskState.getDidWork(),
                 taskState.getSkipped()
         )
-        timings << timing
     }
 
     @Override

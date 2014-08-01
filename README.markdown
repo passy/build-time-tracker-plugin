@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/passy/build-time-tracker-plugin.svg?branch=master)](https://travis-ci.org/passy/build-time-tracker-plugin)
 
-How much time do you waste each day waiting for Gradle? Now you know!
+How much time do you spend each day waiting for Gradle? Now you know!
 
 ## Features
 

@@ -6,17 +6,20 @@ import net.rdrei.android.buildtimetracker.reporters.CSVReporter
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.Logger
 
 class BuildTimeTrackerPlugin implements Plugin<Project> {
     def REPORTERS = [
         summary: SummaryReporter,
         csv: CSVReporter
     ]
+    Logger logger
 
     NamedDomainObjectCollection<ReporterExtension> reporterExtensions
 
     @Override
     void apply(Project project) {
+        this.logger = project.logger
         project.extensions.create("buildtimetracker", BuildTimeTrackerExtension)
         reporterExtensions = project.buildtimetracker.extensions.reporters = project.container(ReporterExtension)
         project.gradle.addBuildListener(new TimingRecorder(this))
@@ -25,7 +28,7 @@ class BuildTimeTrackerPlugin implements Plugin<Project> {
     List<AbstractBuildTimeTrackerReporter> getReporters() {
         reporterExtensions.collect { ext ->
             if (REPORTERS.containsKey(ext.name)) {
-                return REPORTERS.get(ext.name).newInstance(ext.options)
+                return REPORTERS.get(ext.name).newInstance(ext.options, logger)
             }
         }.findAll { ext -> ext != null }
     }

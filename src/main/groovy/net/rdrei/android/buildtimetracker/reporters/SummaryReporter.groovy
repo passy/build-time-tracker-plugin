@@ -3,13 +3,14 @@ package net.rdrei.android.buildtimetracker.reporters
 import net.rdrei.android.buildtimetracker.Timing
 import java.util.concurrent.TimeUnit
 import jline.TerminalFactory
+import org.gradle.api.logging.Logger
 
 class SummaryReporter extends AbstractBuildTimeTrackerReporter {
-    def SQUARE = "▇"
-    def FILL = " "
+    def static final SQUARE = "▇"
+    def static final FILL = " "
 
-    SummaryReporter(Map<String, String> options) {
-        super(options)
+    SummaryReporter(Map<String, String> options, Logger logger) {
+        super(options, logger)
     }
 
     @Override
@@ -20,10 +21,11 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
             timings = timings.sort(false, { it.ms })
         }
 
-        println "== Build Time Summary =="
+        logger.quiet("== Build Time Summary ==")
         formatTable(timings, threshold)
     }
 
+    // Thanks to @sindresorhus for the logic. https://github.com/sindresorhus/time-grunt
     def formatTable(List<Timing> timings, int threshold) {
         def total = timings.sum { t -> t.ms }
         def longestTaskName = timings.inject(0, { acc, val -> Math.max(acc, val.path.length()) })
@@ -42,10 +44,10 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
 
         for (timing in timings) {
             if (timing.ms >= threshold) {
-                printf("%s %s (%s)\n",
-                        createBar(timing.ms / total, longestBar),
+                logger.quiet(sprintf("%s %s (%s)",
+                        createBar(timing.ms / total, timing.ms / longestTiming, maxBarWidth),
                         shortenTaskName(timing.path, maxBarWidth),
-                        formatDuration(timing.ms))
+                        formatDuration(timing.ms)))
             }
         }
     }
@@ -60,12 +62,11 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
         start.trim() + '…' + end.trim()
     }
 
-    def createBar(def frac, def max) {
-        def rounded = Math.round(frac * 100)
-
-        def barLength = Math.ceil(max * frac)
+    def createBar(def fracOfTotal, def fracOfMax, def max) {
+        def roundedTotal = Math.round(fracOfTotal * 100)
+        def barLength = Math.ceil(max * fracOfMax)
         def bar = FILL * (max - barLength) + SQUARE * barLength
-        def formatted = rounded < 10 ? " " + rounded : rounded;
+        def formatted = roundedTotal < 10 ? " " + roundedTotal : roundedTotal;
 
         return bar + ' ' + formatted + '%'
     }

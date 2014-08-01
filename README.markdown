@@ -35,8 +35,8 @@ buildtimetracker {
   reporters {
     csv {
       output "buildtime/${date}.csv"
-      append "true"
-      header "false"
+      append true
+      header false
     }
 
     scribe {

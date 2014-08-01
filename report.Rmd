@@ -1,0 +1,101 @@
+## Build Times
+
+```{r preliminaries, include=FALSE}
+library(ggplot2)
+library(plyr)
+
+options(width=120)
+options(scipen=999)
+```
+
+```{r load, include=FALSE}
+# Load data frame and prep.
+df <- read.csv("times.csv", header=FALSE)
+colnames(df) <- c("timestamp", "order", "task", "success", "did_work", "skipped", "milliseconds")
+
+# Correct mis-factoring of task and boolean fields
+df$task <- as.character(df$task)
+df$success <- as.logical(as.character(df$success))
+df$did_work <- as.logical(as.character(df$did_work))
+df$skipped <- as.logical(as.character(df$skipped))
+
+# Create date objects from timestamp field for display
+df$date <- as.POSIXct(df$timestamp/1000, origin="1970-01-01")
+
+# Add seconds fields
+df$seconds <- floor(df$milliseconds / 1000)
+
+# Sort by timestamp and order
+df <- df[with(df, order(timestamp, order)),]
+row.names(df) <- 1:nrow(df)
+```
+
+
+```{r echo=FALSE}
+total <- ddply(df, .(date), summarise, milliseconds = sum(milliseconds))
+total$seconds = total$milliseconds/1000
+total$minutes = total$milliseconds/1000/60
+total.ecdf <- ecdf(total$milliseconds)
+
+df.required_work <- df[!df$skipped & df$did_work,]
+```
+
+Data collected on `r length(unique(df$timestamp))` Gradle builds running for
+`r format(sum(df$milliseconds)/1000/60/60, digits=1)` hours in total.
+
+* The median build time was `r format(median(total$seconds), digits=1)` seconds.
+* `r format(100 - total.ecdf(10*1000) * 100, digits=1)`% of builds took longer
+  than ten seconds to complete.
+* `r format(100 - total.ecdf(60*1000) * 100, digits=1)`% of builds took longer
+  than one minute to complete.
+* `r format(100 - length(df.required_work$timestamp)/length(df$timestamp)*100, digits=1)`%
+  of subtasks were skipped or required no work.
+
+
+```{r echo=FALSE, fig.width=10, fig.height=7}
+ggplot(total, aes(x = date, y = minutes)) +
+  geom_bar(stat="identity", colour = "black") +
+  theme(axis.title.x = element_blank()) + 
+  ylab("Build Time (minutes)") +
+  ggtitle("Build History") +
+  theme(legend.title = element_blank())
+```
+
+```{r echo=FALSE, fig.width=10, fig.height=7}
+ggplot(total, aes(x = minutes)) +
+  geom_histogram(binwidth = .25, colour = "black") +
+  xlab("Build Time (minutes)") +
+  theme(axis.title.y = element_blank()) + 
+  ggtitle("Build Time Distribution") +
+  theme(legend.title = element_blank())
+```
+
+The slowest ten subtargets requiring work ordered by aggregate total time were:
+
+```{r echo=FALSE, comment=NA}
+task <- ddply(df.required_work, .(task), summarise, 
+              executions = length(date), 
+              median_seconds = median(seconds), 
+              sd_seconds = sd(seconds), 
+              max_seconds = max(seconds),
+              total_seconds = sum(seconds),
+              mean_seconds = mean(seconds))
+
+# Sort by total time
+task.total_seconds <- task[with(task, order(-total_seconds)),]
+row.names(task.total_seconds) <- 1:nrow(task.total_seconds)
+
+# Display top ten by median build time
+task.total_seconds[1:10,c('task', 'executions', 'total_seconds', 'median_seconds')]
+```
+
+The slowest ten subtargets requiring work ordered by median time were:
+
+```{r echo=FALSE, comment=NA}
+# Sort by median time
+task.median_seconds <- task[with(task, order(-median_seconds)),]
+row.names(task.median_seconds) <- 1:nrow(task.median_seconds)
+
+# Display top ten by median build time
+task.median_seconds[1:10,c('task', 'executions', 'median_seconds')]
+```

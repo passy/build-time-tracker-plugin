@@ -58,6 +58,9 @@ The `csv` reporter takes the following options:
 * `header`: When set to `false` the CSV output does not include a prepended
   header row with column names. Is desireable in conjunction with `append`.
 
+A basic [R Markdown](http://rmarkdown.rstudio.com/) script, `report.Rmd` is
+included for ploting and analysing build times using CSV output.
+
 ### SummaryReporter
 
 The `summary` reporter gives you an overview of your tasks at the end of the

@@ -6,3 +6,5 @@ build
 *.iml
 classes
 times.csv
+.Rhistory
+report.html

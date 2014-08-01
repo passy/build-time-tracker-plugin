@@ -48,12 +48,6 @@ buildtimetracker {
 }
 ```
 
-On an initial run, the output will look something like this:
-```
-$ ./gradlew clean assemble
-(TBD)
-```
-
 The `csv` reporter takes the following options:
 
 * `output`: CSV output file location relative to Gradle execution.

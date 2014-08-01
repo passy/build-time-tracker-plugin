@@ -4,6 +4,15 @@
 
 How much time do you waste each day waiting for Gradle? Now you know!
 
+## Features
+
+* Sortable bar chart summaries
+* CSV output
+
+## Screenshot
+
+![Screenshot](assets/screenshot.png)
+
 Usage
 -----
 

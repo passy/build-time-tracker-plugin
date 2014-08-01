@@ -16,15 +16,15 @@ apply plugin: 'idea'
 apply plugin: 'build-time-tracker'
 
 buildtimetracker {
-    reporters {
-        csv {
-            output "times.csv"
-            append true
-            header false
-        }
-
-        summary {}
+  reporters {
+    csv {
+      output "times.csv"
+        append true
+        header false
     }
+
+    summary {}
+  }
 }
 
 dependencies {
@@ -43,7 +43,7 @@ dependencies {
 }
 
 group = 'net.rdrei.android.buildtimetracker'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.0'
 
 install {
   repositories.mavenInstaller {
@@ -54,6 +54,7 @@ install {
 uploadArchives {
   repositories.mavenDeployer {
     pom.artifactId = 'gradle-plugin'
+    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
   }
 }
 

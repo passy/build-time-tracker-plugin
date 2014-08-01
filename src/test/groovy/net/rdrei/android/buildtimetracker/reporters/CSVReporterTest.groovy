@@ -2,6 +2,7 @@ package net.rdrei.android.buildtimetracker.reporters
 
 import au.com.bytecode.opencsv.CSVReader
 import groovy.mock.interceptor.MockFor
+import org.gradle.api.logging.Logger
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.internal.TimeProvider
 import org.gradle.internal.TrueTimeProvider
@@ -22,6 +23,8 @@ class CSVReporterTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder()
 
+    Logger mockLogger = new MockFor(Logger).proxyInstance()
+
     File mkTemporaryFile(String name) {
         File file = folder.newFile name
         if (file.exists()) {
@@ -36,7 +39,7 @@ class CSVReporterTest {
         File file = mkTemporaryFile "test.csv"
         assertFalse("Output CSV exists.", file.exists())
 
-        CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+        CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -49,7 +52,7 @@ class CSVReporterTest {
     @Test
     void writesHeaderToOutputCSV() {
         File file = mkTemporaryFile "test.csv"
-        CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+        CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -78,7 +81,7 @@ class CSVReporterTest {
         CSVReporter reporter = new CSVReporter([
                 output: file.getPath(),
                 header: "false"
-        ])
+        ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -104,7 +107,7 @@ class CSVReporterTest {
     @Test
     void writesTimingsToOutputCSV() {
         File file = mkTemporaryFile "test.csv"
-        CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+        CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -142,7 +145,7 @@ class CSVReporterTest {
 
         mockTimeProvider.use {
             File file = mkTemporaryFile "test.csv"
-            CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+            CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
             reporter.run([
                     new Timing(100, "task1", true, false, true),
@@ -175,7 +178,7 @@ class CSVReporterTest {
     @Test
     void includesTaskOrderInOutputCSVRows() {
         File file = mkTemporaryFile "test.csv"
-        CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+        CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -207,7 +210,7 @@ class CSVReporterTest {
     @Test
     void includesTaskSuccessInOutputCSVRows() {
         File file = mkTemporaryFile "test.csv"
-        CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+        CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -239,7 +242,7 @@ class CSVReporterTest {
     @Test
     void includesTaskDidWorkInOutputCSVRows() {
         File file = mkTemporaryFile "test.csv"
-        CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+        CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -271,7 +274,7 @@ class CSVReporterTest {
     @Test
     void includesTaskSkippedInOutputCSVRows() {
         File file = mkTemporaryFile "test.csv"
-        CSVReporter reporter = new CSVReporter([ output: file.getPath() ])
+        CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),
@@ -309,7 +312,7 @@ class CSVReporterTest {
                 output: file.getPath(),
                 append: "true",
                 header: "false"
-        ])
+        ], mockLogger)
 
         reporter.run([
                 new Timing(100, "task1", true, false, true),

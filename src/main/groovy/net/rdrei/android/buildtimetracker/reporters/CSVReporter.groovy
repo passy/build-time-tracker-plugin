@@ -4,10 +4,11 @@ import au.com.bytecode.opencsv.CSVWriter
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.internal.TimeProvider
 import org.gradle.internal.TrueTimeProvider
+import org.gradle.api.logging.Logger
 
 class CSVReporter extends AbstractBuildTimeTrackerReporter {
-    CSVReporter(Map<String, String> options) {
-        super(options)
+    CSVReporter(Map<String, String> options, Logger logger) {
+        super(options, logger)
     }
 
     @Override

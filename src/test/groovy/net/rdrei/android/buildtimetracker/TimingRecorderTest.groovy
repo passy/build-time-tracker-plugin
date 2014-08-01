@@ -7,6 +7,7 @@ import net.rdrei.android.buildtimetracker.reporters.AbstractBuildTimeTrackerRepo
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskState
 import org.gradle.util.Clock
+import org.gradle.api.logging.Logger
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
@@ -82,12 +83,13 @@ class TimingRecorderTest {
     @Test
     void callsReportersOnBuildFinished() {
         def mockReporter = new MockFor(AbstractBuildTimeTrackerReporter)
+        def mockLogger = new MockFor(Logger)
         mockReporter.demand.run { timings ->
             assertEquals 1, timings.size
             assertEquals "test", timings.get(0).path
             assertEquals 123, timings.get(0).ms
         }
-        def proxyReporter = mockReporter.proxyInstance([:])
+        def proxyReporter = mockReporter.proxyInstance([[:], mockLogger.proxyInstance()] as Object[])
 
         def mockPlugin = new MockFor(BuildTimeTrackerPlugin)
         mockPlugin.demand.getReporters { [ proxyReporter ] }

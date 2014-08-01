@@ -1,4 +1,4 @@
-# ![Build Time Tracker](assets/logo.png)
+# ![Build Time Tracker](https://cdn.rawgit.com/passy/build-time-tracker-plugin/cc3bd9dcbda61ae7b699e4048c3f425525352d54/assets/logo.svg)
 
 [![Build Status](https://travis-ci.org/passy/build-time-tracker-plugin.svg?branch=master)](https://travis-ci.org/passy/build-time-tracker-plugin)
 

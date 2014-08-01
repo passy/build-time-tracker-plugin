@@ -20,7 +20,7 @@ Apply the plugin in your `build.gradle`:
 ```groovy
 buildscript {
   repositories {
-    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
   }
 
   dependencies {
@@ -33,7 +33,7 @@ apply plugin: 'build-time-tracker'
 buildtimetracker {
   reporters {
     csv {
-      output "buildtime/${date}.csv"
+      output "build/times.csv"
       append true
       header false
     }

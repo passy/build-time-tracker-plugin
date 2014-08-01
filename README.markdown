@@ -1,4 +1,5 @@
-# Build Time Tracker
+# ![Build Time Tracker](assets/logo.png)
+
 [![Build Status](https://travis-ci.org/passy/build-time-tracker-plugin.svg?branch=master)](https://travis-ci.org/passy/build-time-tracker-plugin)
 
 How much time do you waste each day waiting for Gradle? Now you know!
@@ -66,6 +67,11 @@ Developing
 
 This project is built and tested by [Travis](https://travis-ci.org) at
 [passy/build-time-tracker-plugin](https://travis-ci.org/passy/build-time-tracker-plugin).
+
+## Acknowledgements
+
+Thanks to [Sindre Sorhus](https://github.com/sindresorhus) for contributing the
+wonderful logo!
 
 License
 --------

@@ -28,8 +28,8 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
     // Thanks to @sindresorhus for the logic. https://github.com/sindresorhus/time-grunt
     def formatTable(List<Timing> timings, int threshold) {
         def total = timings.sum { t -> t.ms }
-        def longestTaskName = timings.inject(0, { acc, val -> Math.max(acc, val.path.length()) })
-        def longestTiming = timings.inject(0, { acc, val -> Math.max(acc, val.ms )})
+        def longestTaskName = timings.collect { it.path.length() }.max()
+        def longestTiming = timings*.ms.max()
         def maxColumns = TerminalFactory.get().width
         if (maxColumns == null) maxColumns = 80
 
@@ -40,7 +40,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
             maxBarWidth = maxColumns - (longestTaskName + 20)
         }
 
-        def longestBar = maxBarWidth * (longestTiming / total)
+        def longestBar = maxBarWidth * longestTiming / total
 
         for (timing in timings) {
             if (timing.ms >= threshold) {
@@ -79,6 +79,6 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
                 minutes,
                 seconds,
                 millis
-        );
+        )
     }
 }

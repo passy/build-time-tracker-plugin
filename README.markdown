@@ -13,8 +13,7 @@ How much time do you waste each day waiting for Gradle? Now you know!
 
 ![Screenshot](assets/screenshot.png)
 
-Usage
------
+## Usage
 
 Apply the plugin in your `build.gradle`:
 
@@ -39,14 +38,17 @@ buildtimetracker {
       header false
     }
 
-    scribe {
-      endpoint "https://example.com/scribe"
+    summary {
+      ordered false
+      threshold 50
     }
-
-    summary {}
   }
 }
 ```
+
+## Reporters
+
+### CSVReporter
 
 The `csv` reporter takes the following options:
 
@@ -58,15 +60,22 @@ The `csv` reporter takes the following options:
    include a prepended header row with column names. Is desireable in
    conjunction with `append`.
 
+### SummaryReporter
+
+The `summary` reporter gives you an overview of your tasks at the end of the
+build. It has the following options:
+
+* `threshold`: (default: 50) Minimum time in milliseconds to display a task.
+* `ordered`: (default: false) Whether or not to sort the output in ascending
+  order by time spent.
+
 _Note_ This plugin only measures the task times that constitute a build.
 Specifically, it does not measure the time in configuration at the start
 of a Gradle run. This means that the time to execute a build with very fast
 tasks is not accurately represented in output because it is dominated by
 the time in configuration instead.
 
-
-Developing
-----------
+## Developing
 
 This project is built and tested by [Travis](https://travis-ci.org) at
 [passy/build-time-tracker-plugin](https://travis-ci.org/passy/build-time-tracker-plugin).
@@ -76,8 +85,7 @@ This project is built and tested by [Travis](https://travis-ci.org) at
 Thanks to [Sindre Sorhus](https://github.com/sindresorhus) for contributing the
 wonderful logo!
 
-License
---------
+## License
 
     Copyright 2014 Pascal Hartig
 

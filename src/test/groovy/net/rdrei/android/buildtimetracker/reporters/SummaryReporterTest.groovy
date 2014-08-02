@@ -114,4 +114,14 @@ class SummaryReporterTest {
         assertTrue lines[2].contains("task3")
         assertTrue lines[3].contains("task2")
     }
+
+    @Test
+    void testEmptyTaskList() {
+        def mockLogger = new MockFor(Logger)
+        mockLogger.demand.quiet(0) {}
+
+        def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
+        reporter.run([
+        ])
+    }
 }

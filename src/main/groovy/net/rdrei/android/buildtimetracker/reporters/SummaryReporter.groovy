@@ -15,6 +15,8 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
 
     @Override
     def run(List<Timing> timings) {
+        if (timings.size() == 0) return
+
         def threshold = getOption("threshold", "50").toInteger()
 
         if (getOption("ordered", "false").toBoolean()) {

@@ -63,7 +63,7 @@ class CSVReporterTest {
 
         String[] header = reader.readNext()
         assertNotNull header
-        assertEquals 7, header.length
+        assertEquals 8, header.length
         assertEquals "timestamp", header[0]
         assertEquals "order", header[1]
         assertEquals "task", header[2]
@@ -71,6 +71,7 @@ class CSVReporterTest {
         assertEquals "did_work", header[4]
         assertEquals "skipped", header[5]
         assertEquals "ms", header[6]
+        assertEquals "date", header[7]
 
         reader.close()
     }
@@ -92,7 +93,7 @@ class CSVReporterTest {
 
         String[] line = reader.readNext()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertNotEquals "timestamp", line[0]
         assertNotEquals "order", line[1]
         assertNotEquals "task", line[2]
@@ -100,6 +101,7 @@ class CSVReporterTest {
         assertNotEquals "did_work", line[4]
         assertNotEquals "skipped", line[5]
         assertNotEquals "ms", line[6]
+        assertNotEquals "date", line[7]
 
         reader.close()
     }
@@ -124,14 +126,14 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "task1", line[2]
         assertEquals "100", line[6]
 
         // Verify second task
         line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "task2", line[2]
         assertEquals "200", line[6]
 
@@ -162,13 +164,13 @@ class CSVReporterTest {
             // Verify first task
             String[] line = lines.next()
             assertNotNull line
-            assertEquals 7, line.length
+            assertEquals 8, line.length
             assertEquals "1234", line[0]
 
             // Verify second task
             line = lines.next()
             assertNotNull line
-            assertEquals 7, line.length
+            assertEquals 8, line.length
             assertEquals "1234", line[0]
 
             reader.close()
@@ -195,13 +197,13 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "0", line[1]
 
         // Verify second task
         line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "1", line[1]
 
         reader.close()
@@ -227,13 +229,13 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "true", line[3]
 
         // Verify second task
         line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "false", line[3]
 
         reader.close()
@@ -259,13 +261,13 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "false", line[4]
 
         // Verify second task
         line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "true", line[4]
 
         reader.close()
@@ -291,13 +293,13 @@ class CSVReporterTest {
         // Verify first task
         String[] line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "true", line[5]
 
         // Verify second task
         line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "false", line[5]
 
         reader.close()
@@ -332,17 +334,54 @@ class CSVReporterTest {
         // Verify first task
         line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "task1", line[2]
         assertEquals "100", line[6]
 
         // Verify second task
         line = lines.next()
         assertNotNull line
-        assertEquals 7, line.length
+        assertEquals 8, line.length
         assertEquals "task2", line[2]
         assertEquals "200", line[6]
 
         reader.close()
+    }
+
+    @Test
+    void includesISO8601InOutputCSVRows() {
+        def mockTimeProvider = new MockFor(TrueTimeProvider)
+        mockTimeProvider.demand.getCurrentTime { 617007600 * 1000 }
+
+        mockTimeProvider.use {
+            File file = mkTemporaryFile "test.csv"
+            CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
+
+            reporter.run([
+                    new Timing(100, "task1", true, false, true),
+                    new Timing(200, "task2", false, true, false)
+            ])
+
+            CSVReader reader = new CSVReader(new FileReader(file))
+
+            Iterator<String[]> lines = reader.readAll().iterator()
+
+            // Skip the header
+            lines.next()
+
+            // Verify first task
+            String[] line = lines.next()
+            assertNotNull line
+            assertEquals 8, line.length
+            assertEquals "1969-12-15T00:18:29,376Z", line[7]
+
+            // Verify second task
+            line = lines.next()
+            assertNotNull line
+            assertEquals 8, line.length
+            assertEquals "1969-12-15T00:18:29,376Z", line[7]
+
+            reader.close()
+        }
     }
 }

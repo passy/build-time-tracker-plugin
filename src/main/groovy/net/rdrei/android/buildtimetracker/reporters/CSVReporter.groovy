@@ -6,6 +6,9 @@ import org.gradle.internal.TimeProvider
 import org.gradle.internal.TrueTimeProvider
 import org.gradle.api.logging.Logger
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 class CSVReporter extends AbstractBuildTimeTrackerReporter {
     CSVReporter(Map<String, String> options, Logger logger) {
         super(options, logger)
@@ -16,6 +19,9 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
         long timestamp = new TrueTimeProvider().getCurrentTime()
         String output = getOption("output", "")
         boolean append = getOption("append", "false").toBoolean()
+        TimeZone tz = TimeZone.getTimeZone("UTC")
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS'Z'")
+        df.setTimeZone(tz)
 
         File file = new File(output)
         file.getParentFile()?.mkdirs()
@@ -23,7 +29,7 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
         CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, append)))
 
         if (getOption("header", "true").toBoolean()) {
-            String[] headers = ["timestamp", "order", "task", "success", "did_work", "skipped", "ms"]
+            String[] headers = ["timestamp", "order", "task", "success", "did_work", "skipped", "ms", "date"]
             writer.writeNext(headers)
         }
 
@@ -35,7 +41,8 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
                     timing.success.toString(),
                     timing.didWork.toString(),
                     timing.skipped.toString(),
-                    timing.ms.toString()
+                    timing.ms.toString(),
+                    df.format(new Date(timestamp))
             ].toArray()
             writer.writeNext(line)
         }

@@ -1,7 +1,6 @@
 buildscript {
   repositories {
     mavenCentral()
-    maven { url 'https://oss.sonatype.org/content/groups/staging/' }
   }
   dependencies {
     classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'

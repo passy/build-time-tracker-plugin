@@ -20,7 +20,7 @@ Apply the plugin in your `build.gradle`:
 ```groovy
 buildscript {
   repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    mavenCentral()
   }
 
   dependencies {
@@ -44,6 +44,21 @@ buildtimetracker {
     }
   }
 }
+```
+
+Using the `SNAPSHOT` release:
+
+```groovy
+buildscript {
+  repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+  }
+
+  dependencies {
+    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.1.2-SNAPSHOT'
+  }
+}
+
 ```
 
 ## Reporters

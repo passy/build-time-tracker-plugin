@@ -18,8 +18,8 @@ buildtimetracker {
   reporters {
     csv {
       output "times.csv"
-        append true
-        header false
+      append true
+      header false
     }
 
     summary {}

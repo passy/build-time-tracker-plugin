@@ -31,8 +31,6 @@ class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
             )
         }
 
-        // TODO: Consider writing my own reader that starts at the end of the file
-        // TODO: and reads upwards.
         printReport(new CSVReader(new BufferedReader(new FileReader(csvFile))))
     }
 

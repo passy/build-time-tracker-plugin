@@ -13,13 +13,9 @@ class ReporterConfigurationError extends Exception {
     }
 
     ReporterConfigurationError(ErrorType errorType, String reporterName, String optionName) {
-        super(generateMessage(errorType, reporterName, optionName, null))
-        this.reporterName = reporterName
-        this.optionName = optionName
-        this.errorType = errorType
+        this(errorType, reporterName, optionName, null)
     }
 
-    // XXX: Figure out how to make use of default constructor arguments
     ReporterConfigurationError(ErrorType errorType, String reporterName, String optionName,
                                String details) {
         super(generateMessage(errorType, reporterName, optionName, details))
@@ -43,7 +39,7 @@ class ReporterConfigurationError extends Exception {
                 if (details != null) msg += ": $details"
                 break
             default:
-                msg = details != null ? details : "Unknown error. Well, fuck."
+                msg = details ?: "Unknown error. Well, fuck."
         }
 
         msg

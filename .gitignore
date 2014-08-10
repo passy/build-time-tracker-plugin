@@ -5,6 +5,6 @@ local.properties
 build
 *.iml
 classes
-times.csv
+/times.csv
 .Rhistory
 report.html

@@ -1,10 +1,7 @@
 package net.rdrei.android.buildtimetracker.reporters
 
-import au.com.bytecode.opencsv.CSVReader
 import groovy.mock.interceptor.MockFor
-import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.api.logging.Logger
-import org.gradle.internal.TrueTimeProvider
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -24,7 +21,7 @@ class CSVSummaryReporterTest {
     void testThrowsErrorWithoutCSV() {
         Logger logger = new MockFor(Logger).proxyInstance()
         def reporter = new CSVSummaryReporter([:], logger)
-        def err
+        def err = null
         try {
             reporter.run([])
         } catch (ReporterConfigurationError e) {
@@ -32,15 +29,15 @@ class CSVSummaryReporterTest {
         }
 
         assertNotNull err
-        assertEquals err.errorType, ReporterConfigurationError.ErrorType.REQUIRED
-        assertEquals err.optionName, "csv"
+        assertEquals ReporterConfigurationError.ErrorType.REQUIRED, err.errorType
+        assertEquals "csv", err.optionName
     }
 
     @Test
     void testThrowsErrorWithInvalidFile() {
         Logger logger = new MockFor(Logger).proxyInstance()
         def reporter = new CSVSummaryReporter([csv: "/invalid/file"], logger)
-        def err
+        def err = null
 
         try {
             reporter.run([])
@@ -49,8 +46,8 @@ class CSVSummaryReporterTest {
         }
 
         assertNotNull err
-        assertEquals err.errorType, ReporterConfigurationError.ErrorType.INVALID
-        assertEquals err.optionName, "csv"
+        assertEquals ReporterConfigurationError.ErrorType.INVALID, err.errorType
+        assertEquals "csv", err.optionName
     }
 
     @Test
@@ -70,6 +67,6 @@ class CSVSummaryReporterTest {
         def reporter = new CSVSummaryReporter([csv: getFixture("times.csv")], mockLogger.proxyInstance())
         reporter.run([])
 
-        assertEquals lines[1].trim(), "Total build time: 1:57.006"
+        assertEquals "Total build time: 1:57.006", lines[1].trim()
     }
 }

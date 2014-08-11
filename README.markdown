@@ -76,6 +76,14 @@ The `csv` reporter takes the following options:
 A basic [R Markdown](http://rmarkdown.rstudio.com/) script, `report.Rmd` is
 included for ploting and analysing build times using CSV output.
 
+### CSVSummaryReporter
+
+The `csvSummary` displays the accumulated total build time from a CSV file.
+The reporter takes the following option:
+
+* `csv`: Path (relative to the gradle file or absolute) to a CSV file created
+  with the above reporter and the options `append = true` and `header = false`.
+
 ### SummaryReporter
 
 The `summary` reporter gives you an overview of your tasks at the end of the

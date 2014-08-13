@@ -3,6 +3,7 @@ package net.rdrei.android.buildtimetracker.reporters
 import au.com.bytecode.opencsv.CSVReader
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.api.logging.Logger
+import org.ocpsoft.prettytime.PrettyTime
 
 class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
     CSVSummaryReporter(Map<String, String> options, Logger logger) {
@@ -40,7 +41,18 @@ class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
 
         logger.quiet "== CSV Build Time Summary =="
 
-        long total = lines.collect { Long.valueOf(it[6]) }.sum()
+        Map times = lines.groupBy { it[0] }.collectEntries {
+            k, v -> [Long.valueOf(k), v.collect { Long.valueOf(it[6]) }.sum()]
+        }
+
+        printTotal(times)
+    }
+
+    void printTotal(Map times) {
+        long total = times.collect { it.value }.sum()
+        def prettyTime = new PrettyTime()
+        def first = new Date((Long) times.keySet().min())
         logger.quiet "Total build time: " + FormattingUtils.formatDuration(total)
+        logger.quiet "(measured since " + prettyTime.format(first) + ")"
     }
 }

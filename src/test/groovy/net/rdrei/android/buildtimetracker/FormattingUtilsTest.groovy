@@ -13,11 +13,11 @@ class FormattingUtilsTest {
 
     @Test
     void testHoursFormatting() {
-        assertEquals "13:37:03.001", FormattingUtils.formatDuration(49023001)
+        assertEquals "13:37:03", FormattingUtils.formatDuration(49023001)
     }
 
     @Test
     void testHoursZeroFill() {
-        assertEquals "3:07:03.123", FormattingUtils.formatDuration(11223123)
+        assertEquals "3:07:03", FormattingUtils.formatDuration(11223123)
     }
 }

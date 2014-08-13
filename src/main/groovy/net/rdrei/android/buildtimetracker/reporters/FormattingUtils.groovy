@@ -11,11 +11,10 @@ class FormattingUtils {
         def seconds = TimeUnit.MILLISECONDS.toSeconds(ms) - TimeUnit.MINUTES.toSeconds(minutes) - TimeUnit.HOURS.toSeconds(hours)
         def millis = ms - TimeUnit.MINUTES.toMillis(minutes) - TimeUnit.SECONDS.toMillis(seconds) - TimeUnit.HOURS.toMillis(hours)
         if (hours > 0) {
-            String.format("%d:%02d:%02d.%03d",
+            String.format("%d:%02d:%02d",
                     hours,
                     minutes,
-                    seconds,
-                    millis
+                    seconds
             )
         } else {
             String.format("%d:%02d.%03d",

@@ -5,8 +5,6 @@ import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.api.logging.Logger
 import org.ocpsoft.prettytime.PrettyTime
 
-import java.security.Timestamp
-
 class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
     CSVSummaryReporter(Map<String, String> options, Logger logger) {
         super(options, logger)

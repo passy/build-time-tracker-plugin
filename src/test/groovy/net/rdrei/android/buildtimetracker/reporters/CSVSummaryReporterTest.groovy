@@ -5,6 +5,7 @@ import org.gradle.api.logging.Logger
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.ocpsoft.prettytime.PrettyTime
 
 import static org.junit.Assert.*
 
@@ -60,13 +61,17 @@ class CSVSummaryReporterTest {
 
     @Test
     void testReportsTotalSummary() {
+        def mockPrettyTime = new MockFor(PrettyTime)
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.quiet(2) { l -> lines << l }
+        mockLogger.demand.quiet(3) { l -> lines << l }
+        mockPrettyTime.demand.format { "2 weeks" }
+
 
         def reporter = new CSVSummaryReporter([csv: getFixture("times.csv")], mockLogger.proxyInstance())
         reporter.run([])
 
         assertEquals "Total build time: 1:57.006", lines[1].trim()
+        assertEquals "(measured since 2 weeks ago)", lines[2].trim()
     }
 }

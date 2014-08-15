@@ -3,8 +3,6 @@ package net.rdrei.android.buildtimetracker.reporters
 import au.com.bytecode.opencsv.CSVReader
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.api.logging.Logger
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
 import org.ocpsoft.prettytime.PrettyTime
 
 class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
@@ -63,7 +61,7 @@ class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
     }
 
     void printToday(Map<Long, Long> times) {
-        def midnight = dateUtils.getMidnightTimestamp()
+        def midnight = dateUtils.midnightTimestamp
         long today = times.collect { it.key >= midnight ? it.value : 0 }.sum()
         logger.quiet "Build time today: " + FormattingUtils.formatDuration(today)
     }

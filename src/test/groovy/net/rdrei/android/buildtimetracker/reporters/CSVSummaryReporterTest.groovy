@@ -64,14 +64,28 @@ class CSVSummaryReporterTest {
         def mockPrettyTime = new MockFor(PrettyTime)
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.quiet(3) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
         mockPrettyTime.demand.format { "2 weeks" }
 
 
         def reporter = new CSVSummaryReporter([csv: getFixture("times.csv")], mockLogger.proxyInstance())
         reporter.run([])
 
-        assertEquals "Total build time: 1:57.006", lines[1].trim()
-        assertEquals "(measured since 2 weeks ago)", lines[2].trim()
+        assertEquals "Total build time: 1:57.006", lines[2].trim()
+        assertEquals "(measured since 2 weeks ago)", lines[3].trim()
+    }
+
+    @Test
+    void testReportsDailySummary() {
+        def mockLogger = new MockFor(Logger)
+        def mockDateUtils = new MockFor(DateUtils)
+        def lines = []
+        mockLogger.demand.quiet(4) { l -> lines << l }
+        mockDateUtils.demand.getMidnightTimestamp { 1407188121286L }
+
+        def reporter = new CSVSummaryReporter([csv: getFixture("times.csv")], mockLogger.proxyInstance())
+        reporter.run([])
+
+        assertEquals "Build time today: 1234", lines[1].trim()
     }
 }

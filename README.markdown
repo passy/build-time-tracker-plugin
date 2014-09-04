@@ -8,6 +8,7 @@ How much time do you spend each day waiting for Gradle? Now you know!
 
 * Sortable bar chart summaries
 * CSV output
+* Daily and total summary
 
 ## Screenshot
 
@@ -41,6 +42,10 @@ buildtimetracker {
     summary {
       ordered false
       threshold 50
+    }
+
+    csvSummary {
+      csv "build/times.csv"
     }
   }
 }

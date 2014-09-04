@@ -6,7 +6,7 @@ import org.joda.time.DateTimeZone;
 public class DateUtils {
     public DateUtils() {}
 
-    long getMidnightTimestamp() {
-        DateTime.now(DateTimeZone.UTC).withTime(0, 0, 0, 0).getMillis()
+    long getLocalMidnightUTCTimestamp() {
+        DateTime.now().withTime(0, 0, 0, 0).withZone(DateTimeZone.UTC).getMillis()
     }
 }

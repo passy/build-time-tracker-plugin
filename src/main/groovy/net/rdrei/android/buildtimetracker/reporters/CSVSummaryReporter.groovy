@@ -61,7 +61,7 @@ class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
     }
 
     void printToday(Map<Long, Long> times) {
-        def midnight = dateUtils.midnightTimestamp
+        def midnight = dateUtils.localMidnightUTCTimestamp
         long today = times.collect { it.key >= midnight ? it.value : 0 }.sum()
         logger.quiet "Build time today: " + FormattingUtils.formatDuration(today)
     }

@@ -38,6 +38,7 @@ dependencies {
   compile 'net.sf.opencsv:opencsv:2.3'
   compile 'jline:jline:2.12'
   compile 'org.ocpsoft.prettytime:prettytime:3.2.5.Final'
+  compile 'joda-time:joda-time:2.4'
 
   testCompile 'junit:junit:4.11'
 }

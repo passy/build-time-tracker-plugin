@@ -25,7 +25,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.1.+'
+    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.2.+'
   }
 }
 
@@ -60,7 +60,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.1.2-SNAPSHOT'
+    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.2.1-SNAPSHOT'
   }
 }
 

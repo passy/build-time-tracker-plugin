@@ -4,7 +4,7 @@ buildscript {
   }
   dependencies {
     classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
-    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.1.+'
+    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.2.+'
   }
 }
 
@@ -44,7 +44,7 @@ dependencies {
 }
 
 group = 'net.rdrei.android.buildtimetracker'
-version = '0.2.0'
+version = '0.2.1-SNAPSHOT'
 
 install {
   repositories.mavenInstaller {

@@ -2,7 +2,6 @@ package net.rdrei.android.buildtimetracker.reporters
 
 import au.com.bytecode.opencsv.CSVWriter
 import net.rdrei.android.buildtimetracker.Timing
-import org.gradle.internal.TimeProvider
 import org.gradle.internal.TrueTimeProvider
 import org.gradle.api.logging.Logger
 
@@ -29,9 +28,15 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
         CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, append)))
 
         if (getOption("header", "true").toBoolean()) {
-            String[] headers = ["timestamp", "order", "task", "success", "did_work", "skipped", "ms", "date"]
+            String[] headers = ["timestamp", "order", "task", "success", "did_work", "skipped", "ms", "date",
+                                "cpu", "memory", "os"]
             writer.writeNext(headers)
         }
+
+        def info = new SysInfo()
+        def osId = info.getOSIdentifier()
+        def cpuId = info.getCPUIdentifier()
+        def maxMem = info.getMaxMemory()
 
         timings.eachWithIndex { timing, idx ->
             String[] line = [
@@ -42,7 +47,10 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
                     timing.didWork.toString(),
                     timing.skipped.toString(),
                     timing.ms.toString(),
-                    df.format(new Date(timestamp))
+                    df.format(new Date(timestamp)),
+                    cpuId,
+                    maxMem,
+                    osId
             ].toArray()
             writer.writeNext(line)
         }

@@ -1,14 +1,12 @@
 package net.rdrei.android.buildtimetracker.reporters;
 
 public class SysInfo {
-    public SysInfo() {}
-
     String getOSIdentifier() {
         ["os.name", "os.version", "os.arch"].collect { System.getProperty(it) }.join(" ")
     }
 
     long getMaxMemory() {
-        Runtime.getRuntime().maxMemory()
+        MemoryUtil.physicalMemoryAvailable
     }
 
     String getCPUIdentifier() {

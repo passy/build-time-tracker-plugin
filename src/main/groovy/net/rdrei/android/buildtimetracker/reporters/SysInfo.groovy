@@ -16,7 +16,7 @@ public class SysInfo {
             proc.waitFor()
 
             if (proc.exitValue() == 0) {
-                return proc.in.text
+                return proc.in.text.trim()
             }
         } else if (os.equalsIgnoreCase("linux")) {
             def osName = ""

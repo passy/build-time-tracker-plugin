@@ -61,7 +61,7 @@ uploadArchives {
 
 modifyPom {
   project {
-    name 'SDK Manager'
+    name 'Gradle Build Time Tracker'
     description 'Gradle plugin which tracks your build times.'
     url 'https://github.com/passy/build-time-tracker-plugin'
     inceptionYear '2014'

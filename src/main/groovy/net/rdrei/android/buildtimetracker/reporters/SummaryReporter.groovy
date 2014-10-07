@@ -6,11 +6,16 @@ import jline.TerminalFactory
 import org.gradle.api.logging.Logger
 
 class SummaryReporter extends AbstractBuildTimeTrackerReporter {
-    def static final SQUARE = "▇"
+    def static final UNICODE_SQUARE = "▇"
+    def static final ASCII_SQUARE = "▒"
     def static final FILL = " "
+
+    String barStyle
 
     SummaryReporter(Map<String, String> options, Logger logger) {
         super(options, logger)
+
+        barStyle = getOption("barstyle", "unicode")
     }
 
     @Override
@@ -65,12 +70,14 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
     }
 
     def createBar(def fracOfTotal, def fracOfMax, def max) {
+        def symbol = barStyle == "ascii" ? ASCII_SQUARE : UNICODE_SQUARE
+
         def roundedTotal = Math.round(fracOfTotal * 100)
         def barLength = Math.ceil(max * fracOfMax)
-        def bar = FILL * (max - barLength) + SQUARE * barLength
+        def bar = FILL * (max - barLength) + symbol * barLength
         def formatted = roundedTotal < 10 ? " " + roundedTotal : roundedTotal;
 
-        return bar + ' ' + formatted + '%'
+        return (barStyle != "none" ? bar + ' ' : '') + formatted + '%'
     }
 
 }

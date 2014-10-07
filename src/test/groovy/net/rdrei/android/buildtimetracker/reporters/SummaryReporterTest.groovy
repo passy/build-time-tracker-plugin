@@ -124,4 +124,74 @@ class SummaryReporterTest {
         reporter.run([
         ])
     }
+
+    @Test
+    void testOutputIncludesUnicodeBars() {
+        def mockLogger = new MockFor(Logger)
+        def lines = []
+        mockLogger.demand.quiet(4) { l -> lines << l }
+
+        def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "task1", true, false, true),
+                new Timing(100, "task3", true, false, true),
+        ])
+
+        assertTrue lines[1].contains(SummaryReporter.UNICODE_SQUARE)
+        assertFalse lines[1].contains(SummaryReporter.ASCII_SQUARE)
+        assertTrue lines[2].contains(SummaryReporter.UNICODE_SQUARE)
+        assertFalse lines[2].contains(SummaryReporter.ASCII_SQUARE)
+    }
+
+    @Test
+    void testOutputIncludesASCIIBars() {
+        def mockLogger = new MockFor(Logger)
+        def lines = []
+        mockLogger.demand.quiet(4) { l -> lines << l }
+
+        def reporter = new SummaryReporter([barstyle: "ascii"], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "task1", true, false, true),
+                new Timing(100, "task3", true, false, true),
+        ])
+
+        assertTrue lines[1].contains(SummaryReporter.ASCII_SQUARE)
+        assertFalse lines[1].contains(SummaryReporter.UNICODE_SQUARE)
+        assertTrue lines[2].contains(SummaryReporter.ASCII_SQUARE)
+        assertFalse lines[2].contains(SummaryReporter.UNICODE_SQUARE)
+    }
+
+    @Test
+    void testOutputIncludesNoBars() {
+        def mockLogger = new MockFor(Logger)
+        def lines = []
+        mockLogger.demand.quiet(4) { l -> lines << l }
+
+        def reporter = new SummaryReporter([barstyle: "none"], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "task1", true, false, true),
+                new Timing(100, "task3", true, false, true),
+        ])
+
+        assertFalse lines[1].contains(SummaryReporter.ASCII_SQUARE)
+        assertFalse lines[1].contains(SummaryReporter.UNICODE_SQUARE)
+        assertFalse lines[2].contains(SummaryReporter.ASCII_SQUARE)
+        assertFalse lines[2].contains(SummaryReporter.UNICODE_SQUARE)
+    }
+
+    @Test
+    void testOutputIncludesPercentagesEvenWithoutBars() {
+        def mockLogger = new MockFor(Logger)
+        def lines = []
+        mockLogger.demand.quiet(4) { l -> lines << l }
+
+        def reporter = new SummaryReporter([barstyle: "none"], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "task1", true, false, true),
+                new Timing(100, "task3", true, false, true),
+        ])
+
+        assertTrue lines[1].contains("%")
+        assertTrue lines[2].contains("%")
+    }
 }

@@ -42,6 +42,7 @@ buildtimetracker {
     summary {
       ordered false
       threshold 50
+      barstyle "unicode"
     }
 
     csvSummary {
@@ -97,6 +98,8 @@ build. It has the following options:
 * `threshold`: (default: 50) Minimum time in milliseconds to display a task.
 * `ordered`: (default: false) Whether or not to sort the output in ascending
   order by time spent.
+* `barstyle`: (default: "unicode") Supports "unicode", "ascii" and "none" for
+  displaying a bar chart of the relative times spent on each task.
 
 _Note_ This plugin only measures the task times that constitute a build.
 Specifically, it does not measure the time in configuration at the start

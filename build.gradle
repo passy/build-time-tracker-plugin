@@ -1,9 +1,10 @@
 buildscript {
   repositories {
     mavenCentral()
+    jcenter()
   }
   dependencies {
-    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
+    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
     classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.2.+'
   }
 }

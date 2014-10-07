@@ -1,14 +1,15 @@
 package net.rdrei.android.buildtimetracker
 
-import java.lang.Override
+import org.gradle.api.Task
+import org.gradle.api.execution.TaskExecutionListener
+
 import org.gradle.BuildListener
 import org.gradle.BuildResult
-import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
 
-class BuildAndTaskExecutionListenerAdapter implements BuildListener {
+class BuildAndTaskExecutionListenerAdapter implements BuildListener, TaskExecutionListener {
     @Override
     void buildStarted(Gradle gradle) { }
 
@@ -25,8 +26,8 @@ class BuildAndTaskExecutionListenerAdapter implements BuildListener {
     void buildFinished(BuildResult buildResult) { }
 
     @Override
-    void beforeExecute(org.gradle.api.Task task) {}
+    void beforeExecute(Task task) {}
 
     @Override
-    void afterExecute(org.gradle.api.Task task, org.gradle.api.tasks.TaskState taskState) {}
+    void afterExecute(Task task, TaskState taskState) {}
 }

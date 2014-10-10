@@ -37,7 +37,7 @@ dependencies {
   compile 'org.rauschig:jarchivelib:0.6.0'
   compile 'commons-io:commons-io:2.4'
   compile 'net.sf.opencsv:opencsv:2.3'
-  compile 'jline:jline:2.12'
+  compile 'jline:jline:2.11'
   compile 'org.ocpsoft.prettytime:prettytime:3.2.5.Final'
   compile 'joda-time:joda-time:2.4'
 

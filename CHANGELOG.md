@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.3.2
+-------------
+
+ * Downgrade to JLine 2.11 to avoid terminal problems.
+   [#41](https://github.com/passy/build-time-tracker-plugin/pull/38)
+
 Version 0.3.0
 -------------
 

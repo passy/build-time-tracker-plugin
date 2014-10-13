@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.4.2
+-------------
+
+ * Resurface build success status in SummaryReporter
+   [#40](https://github.com/passy/build-time-tracker-plugin/issues/40)
+
 Version 0.4.1
 -------------
 

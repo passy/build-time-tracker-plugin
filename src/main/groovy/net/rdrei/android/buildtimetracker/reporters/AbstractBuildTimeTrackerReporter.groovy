@@ -1,6 +1,7 @@
 package net.rdrei.android.buildtimetracker.reporters
 
 import net.rdrei.android.buildtimetracker.Timing
+import org.gradle.BuildResult
 import org.gradle.api.logging.Logger
 
 abstract class AbstractBuildTimeTrackerReporter {
@@ -17,4 +18,6 @@ abstract class AbstractBuildTimeTrackerReporter {
     String getOption(String name, String defaultVal) {
         options[name] == null ? defaultVal : options[name]
     }
+
+    void onBuildResult(BuildResult result) {}
 }

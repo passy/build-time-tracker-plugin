@@ -1,0 +1,3 @@
+signing.keyId=yourkey
+signing.password=yoursecret
+signing.secretKeyRingFile=/home/you/.gnupg/secring.gpg

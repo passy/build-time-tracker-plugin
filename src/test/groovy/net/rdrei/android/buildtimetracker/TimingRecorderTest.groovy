@@ -11,6 +11,7 @@ import org.gradle.api.logging.Logger
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNull
 
 class TimingRecorderTest {
 
@@ -88,6 +89,9 @@ class TimingRecorderTest {
             assertEquals 1, timings.size
             assertEquals "test", timings.get(0).path
             assertEquals 123, timings.get(0).ms
+        }
+        mockReporter.demand.onBuildResult { result ->
+            assertNull result
         }
         def proxyReporter = mockReporter.proxyInstance([[:], mockLogger.proxyInstance()] as Object[])
 

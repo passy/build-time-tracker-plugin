@@ -50,7 +50,7 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
 
     @Override
     void buildFinished(BuildResult result) {
-        plugin.reporters.each { it.run timings }
+        plugin.reporters.each { it.run timings; it.onBuildResult result }
     }
 
     List<String> getTasks() {

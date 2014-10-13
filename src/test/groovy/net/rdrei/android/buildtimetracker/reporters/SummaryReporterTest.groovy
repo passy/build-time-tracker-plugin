@@ -2,6 +2,7 @@ package net.rdrei.android.buildtimetracker.reporters
 
 import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.Timing
+import org.gradle.BuildResult
 import org.gradle.internal.TimeProvider
 import org.gradle.internal.TrueTimeProvider
 import org.junit.After
@@ -193,5 +194,42 @@ class SummaryReporterTest {
 
         assertTrue lines[1].contains("%")
         assertTrue lines[2].contains("%")
+    }
+
+    @Test
+    void testOutputContainsStatusSuccessMessage() {
+        def mockLogger = new MockFor(Logger)
+        def mockBuildResult = new BuildResult(null, null)
+        def lines = []
+        mockLogger.ignore.quiet { l -> lines << l }
+        mockLogger.ignore.lifecycle { l -> lines << l }
+
+        def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "task1", true, false, true),
+                new Timing(100, "task3", true, false, true),
+        ])
+
+        reporter.onBuildResult(mockBuildResult)
+        assertTrue lines[4].contains("BUILD SUCCESSFUL")
+    }
+
+    @Test
+    void testOutputContainsStatusFailureMessage() {
+        def mockLogger = new MockFor(Logger)
+        def mockBuildResult = new BuildResult(null, new Throwable())
+        def lines = []
+        mockLogger.ignore.lifecycle { l -> lines << l }
+        mockLogger.ignore.quiet { l -> lines << l }
+        mockLogger.ignore.error { l -> lines << l }
+
+        def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "task1", false, false, true),
+                new Timing(100, "task3", true, false, true),
+        ])
+
+        reporter.onBuildResult(mockBuildResult)
+        assertTrue lines[4].contains("BUILD FAILED")
     }
 }

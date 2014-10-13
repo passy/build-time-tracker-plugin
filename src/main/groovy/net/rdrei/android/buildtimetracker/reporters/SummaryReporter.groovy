@@ -1,6 +1,9 @@
 package net.rdrei.android.buildtimetracker.reporters
 
 import net.rdrei.android.buildtimetracker.Timing
+import org.gradle.BuildResult
+import org.gradle.logging.StyledTextOutputFactory
+
 import java.util.concurrent.TimeUnit
 import jline.TerminalFactory
 import org.gradle.api.logging.Logger
@@ -11,11 +14,13 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
     def static final FILL = " "
 
     String barStyle
+    boolean successOutput
 
     SummaryReporter(Map<String, String> options, Logger logger) {
         super(options, logger)
 
         barStyle = getOption("barstyle", "unicode")
+        successOutput = Boolean.parseBoolean(getOption("successOutput", "true"))
     }
 
     @Override
@@ -30,6 +35,22 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
 
         logger.quiet("== Build Time Summary ==")
         formatTable(timings, threshold)
+    }
+
+    @Override
+    void onBuildResult(BuildResult result) {
+        if (!successOutput) {
+            return;
+        }
+
+        // Separate from previous output with a new line
+        logger.lifecycle("")
+
+        if (result.failure != null) {
+            logger.error("== BUILD FAILED ==")
+        } else {
+            logger.lifecycle("== BUILD SUCCESSFUL ==")
+        }
     }
 
     // Thanks to @sindresorhus for the logic. https://github.com/sindresorhus/time-grunt

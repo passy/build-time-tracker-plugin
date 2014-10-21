@@ -25,11 +25,11 @@ buildscript {
   }
 
   dependencies {
-    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.4.+'
+    classpath "net.rdrei.android.buildtimetracker:gradle-plugin:0.4.+"
   }
 }
 
-apply plugin: 'build-time-tracker'
+apply plugin: "build-time-tracker"
 
 buildtimetracker {
   reporters {
@@ -57,11 +57,11 @@ Using the `SNAPSHOT` release:
 ```groovy
 buildscript {
   repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
   }
 
   dependencies {
-    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.4.3-SNAPSHOT'
+    classpath "net.rdrei.android.buildtimetracker:gradle-plugin:0.4.3-SNAPSHOT"
   }
 }
 

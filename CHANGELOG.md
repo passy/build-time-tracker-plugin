@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.4.3
+-------------
+
+ * Another workaround for bash -echo problems
+   [#44](https://github.com/passy/build-time-tracker-plugin/issues/44)
+
 Version 0.4.2
 -------------
 

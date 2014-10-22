@@ -58,7 +58,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
         def total = timings.sum { t -> t.ms }
         def longestTaskName = timings.collect { it.path.length() }.max()
         def longestTiming = timings*.ms.max()
-        def maxColumns = TerminalFactory.get().width
+        def maxColumns = TerminalInstance.get().width
         if (maxColumns == null) maxColumns = 80
 
         def maxBarWidth

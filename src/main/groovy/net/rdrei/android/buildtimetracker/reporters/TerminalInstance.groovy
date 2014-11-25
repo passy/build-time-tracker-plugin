@@ -7,9 +7,13 @@ import jline.TerminalFactory
  * Singleton wrapper around {@link jline.TerminalFactory} to work around jline2#163
  */
 class TerminalInstance {
-    private static Terminal sInstance = TerminalFactory.get()
+    private static Terminal sInstance = null
 
     public static Terminal get() {
-        return sInstance
+        if (sInstance == null) {
+            sInstance = TerminalFactory.get()
+            sInstance.echoEnabled = true
+        }
+        sInstance
     }
 }

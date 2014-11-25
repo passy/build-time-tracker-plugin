@@ -53,6 +53,14 @@ install {
   }
 }
 
+compileGroovy {
+  groovyOptions.forkOptions.jvmArgs = ['-noverify']
+}
+
+test {
+  jvmArgs '-noverify'
+}
+
 uploadArchives {
   repositories.mavenDeployer {
     pom.artifactId = 'gradle-plugin'

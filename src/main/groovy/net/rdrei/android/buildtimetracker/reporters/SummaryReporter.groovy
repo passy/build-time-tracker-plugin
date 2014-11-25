@@ -2,10 +2,6 @@ package net.rdrei.android.buildtimetracker.reporters
 
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.BuildResult
-import org.gradle.logging.StyledTextOutputFactory
-
-import java.util.concurrent.TimeUnit
-import jline.TerminalFactory
 import org.gradle.api.logging.Logger
 
 class SummaryReporter extends AbstractBuildTimeTrackerReporter {
@@ -67,8 +63,6 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
         } else {
             maxBarWidth = maxColumns - (longestTaskName + 20)
         }
-
-        def longestBar = maxBarWidth * longestTiming / total
 
         for (timing in timings) {
             if (timing.ms >= threshold) {

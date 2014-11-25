@@ -89,10 +89,9 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
 
         def roundedTotal = Math.round(fracOfTotal * 100)
         def barLength = Math.ceil(max * fracOfMax)
-        def bar = FILL * (max - barLength) + symbol * barLength
-        def formatted = roundedTotal < 10 ? " " + roundedTotal : roundedTotal;
-
-        return (barStyle != "none" ? bar + ' ' : '') + formatted + '%'
+        def bar = FILL * (max - barLength) + symbol * (barLength - 1)
+        def formatted = (roundedTotal < 10 ? " " : "") + roundedTotal
+        return (barStyle != "none" ? (bar + " ") : "") + formatted + '%'
     }
 
 }

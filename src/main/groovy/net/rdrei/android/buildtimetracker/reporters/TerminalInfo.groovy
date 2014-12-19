@@ -19,7 +19,8 @@ class TerminalInfo {
             Process p = Runtime.getRuntime().exec([ "bash", "-c", "tput cols 2> /dev/tty" ] as String[])
             p.waitFor()
             def reader = new BufferedReader(new InputStreamReader(p.getInputStream()))
-            Integer.valueOf(reader.readLine().trim())
+            def line = reader.readLine()?.trim()
+            if (line != null) Integer.valueOf(line) else fallback
         } catch (IOException ignored) {
             fallback
         }

@@ -73,7 +73,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
         }
     }
 
-    def static shortenTaskName(String taskName, def max) {
+    def static shortenTaskName(String taskName, int max) {
         if (taskName.length() < max) { return taskName }
 
         int partLength = Math.floor((max - 3) / 2) as int
@@ -83,7 +83,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
         start.trim() + '…' + end.trim()
     }
 
-    def createBar(def fracOfTotal, def fracOfMax, def max) {
+    def createBar(float fracOfTotal, float fracOfMax, int max) {
         def symbol = barStyle == "ascii" ? ASCII_SQUARE : UNICODE_SQUARE
 
         def roundedTotal = Math.round(fracOfTotal * 100)

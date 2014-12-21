@@ -83,7 +83,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
         start.trim() + '…' + end.trim()
     }
 
-    def createBar(float fracOfTotal, float fracOfMax, int max) {
+    def createBar(def fracOfTotal, def fracOfMax, def max) {
         def symbol = barStyle == "ascii" ? ASCII_SQUARE : UNICODE_SQUARE
 
         def roundedTotal = Math.round(fracOfTotal * 100)

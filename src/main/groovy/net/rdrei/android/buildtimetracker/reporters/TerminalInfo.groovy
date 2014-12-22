@@ -14,6 +14,12 @@ class TerminalInfo {
             return Integer.parseInt(cols, 10)
         }
 
+        // tput requires $TERM to be set, otherwise it's going to print an error.
+        // This unfortunately means this doesn't work in daemon mode.
+        if (System.getenv("TERM") == null) {
+            return fallback
+        }
+
         // Totally unportable way of detecting the terminal width on POSIX and OS X.
         try {
             Process p = Runtime.getRuntime().exec([ "bash", "-c", "tput cols 2> /dev/tty" ] as String[])

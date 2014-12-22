@@ -73,7 +73,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
         }
     }
 
-    def static shortenTaskName(String taskName, int max) {
+    def static shortenTaskName(String taskName, def max) {
         if (taskName.length() < max) { return taskName }
 
         int partLength = Math.floor((max - 3) / 2) as int

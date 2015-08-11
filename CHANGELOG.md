@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.5
+-----------
+
+ * Upgrade to Gradle 2.6
+   [#52](https://github.com/passy/build-time-tracker-plugin/pull/52)
+
 Version 0.4.3
 -------------
 

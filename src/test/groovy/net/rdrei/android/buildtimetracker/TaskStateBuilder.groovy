@@ -7,6 +7,7 @@ class TestTaskState implements TaskState {
     Throwable failure = null
     boolean didWork = false
     boolean skipped = false
+    boolean upToDate = false
     String skipMessage = null
 
     @Override
@@ -38,6 +39,11 @@ class TestTaskState implements TaskState {
     String getSkipMessage() {
         skipMessage
     }
+
+    @Override
+    boolean getUpToDate() {
+        upToDate
+    }
 }
 
 class TaskStateBuilder {
@@ -65,6 +71,11 @@ class TaskStateBuilder {
 
     TaskStateBuilder withSkipMessage(boolean skipMessage) {
         state.skipMessage = skipMessage
+        this
+    }
+
+    TaskState withUpToDate(boolean upToDate) {
+        state.upToDate = upToDate
         this
     }
 

@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 0.6
+-----------
+
+ * Upgrade to Gradle 2.10
+
 Version 0.5
 -----------
 

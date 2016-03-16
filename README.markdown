@@ -1,6 +1,11 @@
 # ![Build Time Tracker](https://cdn.rawgit.com/passy/build-time-tracker-plugin/cc3bd9dcbda61ae7b699e4048c3f425525352d54/assets/logo.svg)
 
 [![Build Status](https://travis-ci.org/passy/build-time-tracker-plugin.svg?branch=master)](https://travis-ci.org/passy/build-time-tracker-plugin)
+[![Stories in Ready](https://badge.waffle.io/passy/build-time-tracker-plugin.svg?label=ready&title=Ready)](http://waffle.io/passy/build-time-tracker-plugin)
+Delete passy/build-time-tracker-plugin
+Deleting a project will remove all of its data from waffle.io and unregister its webhooks to GitHub. Deleting a project will not affect any data in the GitHub repos that are connected to it.
+
+Enter "passy/build-time-tracker-plugin" to confirm delete
 
 How much time do you spend each day waiting for Gradle? Now you know!
 

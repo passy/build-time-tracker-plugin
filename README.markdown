@@ -68,6 +68,17 @@ buildscript {
 
 ```
 
+## Difference to `--profile`
+
+You may wonder why you would want to use this plugin when gradle has
+a built-in [build profiler](https://docs.gradle.org/current/userguide/tutorial_gradle_command_line.html#sec:profiling_build).
+The quick version is, that if you just want to quickly check what it is that's slowing down your build,
+`--profile` will be all you need. However, if you want to continuously monitor your build and find
+bottlenecks that develop over time, this plugin may be the right fit for you.
+`build-time-tracker` writes a continuous log that is monoidal and can be collected from various
+different machines to run statistical analyses. Importantly, the written files contain
+identifying information about the machine the build happened on so you can compare apples with apples.
+
 ## Reporters
 
 ### CSVReporter

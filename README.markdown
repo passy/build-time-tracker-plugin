@@ -114,6 +114,7 @@ build. It has the following options:
   displaying a bar chart of the relative times spent on each task.
 * `successOutput`: (default: "true") Redisplay build success or failure message
   so you don't miss it if the summary output is long.
+* `shortenTaskNames`: (default: "true") Shortens long tasks names.
 
 _Note_ This plugin only measures the task times that constitute a build.
 Specifically, it does not measure the time in configuration at the start

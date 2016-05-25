@@ -104,6 +104,34 @@ class SummaryReporterTest {
     }
 
     @Test
+    void testOutputIncludesShortenedLongTaskName() {
+        def mockLogger = new MockFor(Logger)
+        def lines = []
+        mockLogger.demand.info(2) { l -> lines << l }
+
+        def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
+        ])
+
+        assert lines[1].contains("thisIsAReally…JustForTask1")
+    }
+
+    @Test
+    void testOutputIncludesLongTaskName() {
+        def mockLogger = new MockFor(Logger)
+        def lines = []
+        mockLogger.demand.info(2) { l -> lines << l }
+
+        def reporter = new SummaryReporter([shortenTaskNames: false], mockLogger.proxyInstance())
+        reporter.run([
+                new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
+        ])
+
+        assert lines[1].contains("thisIsAReallyLongNameJustForTask1")
+    }
+
+    @Test
     void testEmptyTaskList() {
         def mockLogger = new MockFor(Logger)
         mockLogger.demand.info(0) {}

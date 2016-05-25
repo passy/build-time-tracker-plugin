@@ -11,12 +11,14 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
 
     String barStyle
     boolean successOutput
+    boolean shortenTaskNames
 
     SummaryReporter(Map<String, String> options, Logger logger) {
         super(options, logger)
 
         barStyle = getOption("barstyle", "unicode")
         successOutput = Boolean.parseBoolean(getOption("successOutput", "true"))
+        shortenTaskNames = Boolean.parseBoolean(getOption("shortenTaskNames", "true"))
     }
 
     @Override
@@ -67,7 +69,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
             if (timing.ms >= threshold) {
                 logger.info(sprintf("%s %s (%s)",
                         createBar(timing.ms / total, timing.ms / longestTiming, maxBarWidth),
-                        shortenTaskName(timing.path, maxBarWidth),
+                        shortenTaskNames ? shortenTaskName(timing.path, maxBarWidth) : timing.path,
                         FormattingUtils.formatDuration(timing.ms)))
             }
         }

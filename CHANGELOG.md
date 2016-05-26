@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Version 0.7
+-----------
+
+ * Upgrade to Gradle 2.13
+ * Add the ability to toggle the shortening of long task names via
+   `shortenTaskNames` [#64](https://github.com/passy/build-time-tracker-plugin/pull/64)
+ * Up build time summary log level to info
+   [#63](https://github.com/passy/build-time-tracker-plugin/pull/63)
+
 Version 0.6
 -----------
 

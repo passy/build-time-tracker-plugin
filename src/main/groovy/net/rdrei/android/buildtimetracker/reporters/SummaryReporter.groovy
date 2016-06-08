@@ -31,7 +31,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
             timings = timings.sort(false, { it.ms })
         }
 
-        logger.info("== Build Time Summary ==")
+        logger.quiet("== Build Time Summary ==")
         formatTable(timings, threshold)
     }
 
@@ -67,7 +67,7 @@ class SummaryReporter extends AbstractBuildTimeTrackerReporter {
 
         for (timing in timings) {
             if (timing.ms >= threshold) {
-                logger.info(sprintf("%s %s (%s)",
+                logger.quiet(sprintf("%s %s (%s)",
                         createBar(timing.ms / total, timing.ms / longestTiming, maxBarWidth),
                         shortenTaskNames ? shortenTaskName(timing.path, maxBarWidth) : timing.path,
                         FormattingUtils.formatDuration(timing.ms)))

@@ -3,16 +3,29 @@ package net.rdrei.android.buildtimetracker.reporters
 import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.BuildResult
-import org.gradle.api.logging.Logger
+import org.gradle.internal.TimeProvider
+import org.gradle.internal.TrueTimeProvider
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
+import org.gradle.api.logging.Logger
 
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotEquals
+import static org.junit.Assert.assertNotNull
+import static org.junit.Assert.assertTrue
+import static org.junit.Assert.assertContains
+import static org.junit.Assert.assertFalse
+
+import org.junit.Test
 
 class SummaryReporterTest {
     @Test
     void testLinesCountMatchesTimings() {
         def mockLogger = new MockFor(Logger)
-        mockLogger.demand.info(3) {}
+        mockLogger.demand.quiet(3) {}
 
         def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
         reporter.run([
@@ -25,7 +38,7 @@ class SummaryReporterTest {
     void testIncludesSummaryHeader() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(3) { l -> lines << l }
+        mockLogger.demand.quiet(3) { l -> lines << l }
 
         def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
         reporter.run([
@@ -39,7 +52,7 @@ class SummaryReporterTest {
     @Test
     void testExcludesBelowTreshold() {
         def mockLogger = new MockFor(Logger)
-        mockLogger.demand.info(2) {}
+        mockLogger.demand.quiet(2) {}
 
         def reporter = new SummaryReporter([threshold: 150], mockLogger.proxyInstance())
         reporter.run([
@@ -52,7 +65,7 @@ class SummaryReporterTest {
     void testDoesntOrderWithoutOptionEnabled() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(4) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
 
         def reporter = new SummaryReporter([ordered: false], mockLogger.proxyInstance())
         reporter.run([
@@ -71,7 +84,7 @@ class SummaryReporterTest {
     void testDoesntOrderWithOptionEnabled() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(4) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
 
         def reporter = new SummaryReporter([ordered: true], mockLogger.proxyInstance())
         reporter.run([
@@ -89,7 +102,7 @@ class SummaryReporterTest {
     void testOutputIncludesTaskName() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(4) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
 
         def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
         reporter.run([
@@ -108,7 +121,7 @@ class SummaryReporterTest {
         def mockLogger = new MockFor(Logger)
         def mockTerminal = new MockFor(TerminalInfo)
         def lines = []
-        mockLogger.demand.info(2) { l -> lines << l }
+        mockLogger.demand.quiet(2) { l -> lines << l }
         mockTerminal.demand.getWidth(1) { 80 }
 
         mockTerminal.use {
@@ -126,13 +139,13 @@ class SummaryReporterTest {
         def mockLogger = new MockFor(Logger)
         def mockTerminal = new MockFor(TerminalInfo)
         def lines = []
-        mockLogger.demand.info(2) { l -> lines << l }
+        mockLogger.demand.quiet(2) { l -> lines << l }
         mockTerminal.demand.getWidth(1) { 80 }
 
         mockTerminal.use {
             def reporter = new SummaryReporter([shortenTaskNames: false], mockLogger.proxyInstance())
             reporter.run([
-                    new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
+                new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
             ])
         }
 
@@ -142,7 +155,7 @@ class SummaryReporterTest {
     @Test
     void testEmptyTaskList() {
         def mockLogger = new MockFor(Logger)
-        mockLogger.demand.info(0) {}
+        mockLogger.demand.quiet(0) {}
 
         def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
         reporter.run([
@@ -153,7 +166,7 @@ class SummaryReporterTest {
     void testOutputIncludesUnicodeBars() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(4) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
 
         def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
         reporter.run([
@@ -171,7 +184,7 @@ class SummaryReporterTest {
     void testOutputIncludesASCIIBars() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(4) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
 
         def reporter = new SummaryReporter([barstyle: "ascii"], mockLogger.proxyInstance())
         reporter.run([
@@ -189,7 +202,7 @@ class SummaryReporterTest {
     void testOutputIncludesNoBars() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(4) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
 
         def reporter = new SummaryReporter([barstyle: "none"], mockLogger.proxyInstance())
         reporter.run([
@@ -207,7 +220,7 @@ class SummaryReporterTest {
     void testOutputIncludesPercentagesEvenWithoutBars() {
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.info(4) { l -> lines << l }
+        mockLogger.demand.quiet(4) { l -> lines << l }
 
         def reporter = new SummaryReporter([barstyle: "none"], mockLogger.proxyInstance())
         reporter.run([
@@ -224,7 +237,7 @@ class SummaryReporterTest {
         def mockLogger = new MockFor(Logger)
         def mockBuildResult = new BuildResult(null, null)
         def lines = []
-        mockLogger.ignore.info { l -> lines << l }
+        mockLogger.ignore.quiet { l -> lines << l }
         mockLogger.ignore.lifecycle { l -> lines << l }
 
         def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
@@ -243,7 +256,7 @@ class SummaryReporterTest {
         def mockBuildResult = new BuildResult(null, new Throwable())
         def lines = []
         mockLogger.ignore.lifecycle { l -> lines << l }
-        mockLogger.ignore.info { l -> lines << l }
+        mockLogger.ignore.quiet { l -> lines << l }
         mockLogger.ignore.error { l -> lines << l }
 
         def reporter = new SummaryReporter([:], mockLogger.proxyInstance())

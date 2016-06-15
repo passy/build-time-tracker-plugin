@@ -106,13 +106,17 @@ class SummaryReporterTest {
     @Test
     void testOutputIncludesShortenedLongTaskName() {
         def mockLogger = new MockFor(Logger)
+        def mockTerminal = new MockFor(TerminalInfo)
         def lines = []
         mockLogger.demand.info(2) { l -> lines << l }
+        mockTerminal.demand.getWidth(1) { 80 }
 
-        def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
-        reporter.run([
-                new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
-        ])
+        mockTerminal.use {
+            def reporter = new SummaryReporter([:], mockLogger.proxyInstance())
+            reporter.run([
+                    new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
+            ])
+        }
 
         assert lines[1].contains("thisIsAReally…JustForTask1")
     }
@@ -120,13 +124,17 @@ class SummaryReporterTest {
     @Test
     void testOutputIncludesLongTaskName() {
         def mockLogger = new MockFor(Logger)
+        def mockTerminal = new MockFor(TerminalInfo)
         def lines = []
         mockLogger.demand.info(2) { l -> lines << l }
+        mockTerminal.demand.getWidth(1) { 80 }
 
-        def reporter = new SummaryReporter([shortenTaskNames: false], mockLogger.proxyInstance())
-        reporter.run([
-                new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
-        ])
+        mockTerminal.use {
+            def reporter = new SummaryReporter([shortenTaskNames: false], mockLogger.proxyInstance())
+            reporter.run([
+                    new Timing(300, "thisIsAReallyLongNameJustForTask1", true, false, true)
+            ])
+        }
 
         assert lines[1].contains("thisIsAReallyLongNameJustForTask1")
     }

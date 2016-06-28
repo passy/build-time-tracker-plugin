@@ -1,6 +1,7 @@
 # ![Build Time Tracker](https://cdn.rawgit.com/passy/build-time-tracker-plugin/cc3bd9dcbda61ae7b699e4048c3f425525352d54/assets/logo.svg)
 
 [![Build Status](https://travis-ci.org/passy/build-time-tracker-plugin.svg?branch=master)](https://travis-ci.org/passy/build-time-tracker-plugin)
+![Maven Version](https://img.shields.io/maven-central/v/net.rdrei.android.buildtimetracker/gradle-plugin.svg?maxAge=2592000)
 [![Stories in Ready](https://badge.waffle.io/passy/build-time-tracker-plugin.svg?label=ready&title=Ready)](http://waffle.io/passy/build-time-tracker-plugin)
 
 How much time do you spend each day waiting for Gradle? Now you know!

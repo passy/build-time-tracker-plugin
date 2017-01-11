@@ -3,7 +3,6 @@ package net.rdrei.android.buildtimetracker.reporters
 import groovy.json.JsonBuilder
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.api.logging.Logger
-import org.gradle.internal.TrueTimeProvider
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat

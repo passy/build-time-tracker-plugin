@@ -3,20 +3,10 @@ package net.rdrei.android.buildtimetracker.reporters
 import groovy.mock.interceptor.MockFor
 import net.rdrei.android.buildtimetracker.Timing
 import org.gradle.BuildResult
-import org.gradle.internal.TimeProvider
-import org.gradle.internal.TrueTimeProvider
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import org.gradle.api.logging.Logger
 
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertNotEquals
-import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertContains
 import static org.junit.Assert.assertFalse
 
 import org.junit.Test

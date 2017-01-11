@@ -2,7 +2,6 @@ package net.rdrei.android.buildtimetracker.reporters
 
 import au.com.bytecode.opencsv.CSVWriter
 import net.rdrei.android.buildtimetracker.Timing
-import org.gradle.internal.TrueTimeProvider
 import org.gradle.api.logging.Logger
 
 import java.text.DateFormat

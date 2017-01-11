@@ -5,10 +5,6 @@ import groovy.mock.interceptor.MockFor
 import groovy.mock.interceptor.StubFor
 import org.gradle.api.logging.Logger
 import net.rdrei.android.buildtimetracker.Timing
-import org.gradle.internal.TimeProvider
-import org.gradle.internal.TrueTimeProvider
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -405,15 +401,19 @@ class CSVReporterTest {
                     return "power"
             }
         }
+        def mockTimeProvider = new MockFor(TrueTimeProvider)
+        mockTimeProvider.demand.getCurrentTime { 0 }
 
         mockSystem.use {
             File file = mkTemporaryFile "test.csv"
             CSVReporter reporter = new CSVReporter([ output: file.getPath() ], mockLogger)
 
-            reporter.run([
-                    new Timing(100, "task1", true, false, true),
-                    new Timing(200, "task2", false, true, false)
-            ])
+            mockTimeProvider.use {
+                reporter.run([
+                        new Timing(100, "task1", true, false, true),
+                        new Timing(200, "task2", false, true, false)
+                ])
+            }
 
             CSVReader reader = new CSVReader(new FileReader(file))
 

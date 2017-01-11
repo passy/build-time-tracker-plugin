@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 0.9
+-----------
+
+ * Add JSON reporter. [#45](https://github.com/passy/build-time-tracker-plugin/pull/72)
+ * Provide forward-compatibility with Gradle (3.3+) through own
+   TrueTimeProvider. [#75](https://github.com/passy/build-time-tracker-plugin/issues/75)
+
 Version 0.7
 -----------
 

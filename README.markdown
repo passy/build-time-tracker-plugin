@@ -93,7 +93,7 @@ The `csv` reporter takes the following options:
 * `append`: When set to `true` the CSV output file is not truncated. This is
   useful for collecting a series of build time profiles in a single CSV.
 * `header`: When set to `false` the CSV output does not include a prepended
-  header row with column names. Is desireable in conjunction with `append`.
+  header row with column names. Is desirable in conjunction with `append`.
 
 A basic [R Markdown](http://rmarkdown.rstudio.com/) script, `report.Rmd` is
 included for ploting and analysing build times using CSV output.

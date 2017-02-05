@@ -44,7 +44,7 @@ class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
 
         logger.quiet "== CSV Build Time Summary =="
 
-        Map<Long, Long> times = lines.groupBy { it[0] }.collectEntries {
+        Map<Long, Long> times = lines.findAll { it[0] != 'timestamp' }.groupBy { it[0] }.collectEntries {
             k, v -> [Long.valueOf(k), v.collect { Long.valueOf(it[6]) }.sum()]
         }
 

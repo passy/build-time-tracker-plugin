@@ -77,6 +77,30 @@ class CSVSummaryReporterTest {
     }
 
     @Test
+    void testReportsTotalSummaryWithHeaders() {
+        def mockPrettyTime = new MockFor(PrettyTime)
+        def mockLogger = new MockFor(Logger)
+        def lines = []
+        def err = null
+        mockLogger.demand.quiet(4) { l -> lines << l }
+        mockPrettyTime.demand.format { "2 weeks ago" }
+
+        mockPrettyTime.use {
+            def reporter = new CSVSummaryReporter([csv: getFixture("timesWithHeaders.csv")], mockLogger.proxyInstance())
+
+            try {
+                reporter.run([])
+            } catch (NumberFormatException e) {
+               err = e
+            }
+        }
+        assertNull(err)
+        assertTrue(lines[2].toString().contains("Total build time:"))
+
+    }
+
+
+    @Test
     void testReportsDailySummary() {
         def mockLogger = new MockFor(Logger)
         def mockDateUtils = new MockFor(DateUtils)

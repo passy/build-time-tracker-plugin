@@ -8,6 +8,7 @@ class TestTaskState implements TaskState {
     boolean didWork = false
     boolean skipped = false
     boolean upToDate = false
+    boolean noSource = false
     String skipMessage = null
 
     @Override
@@ -43,6 +44,11 @@ class TestTaskState implements TaskState {
     @Override
     boolean getUpToDate() {
         upToDate
+    }
+
+    @Override
+    boolean getNoSource() {
+        noSource
     }
 }
 

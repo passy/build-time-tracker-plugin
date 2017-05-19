@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.10
+------------
+
+ * Update to Gradle 3.5.
+
+
 Version 0.9
 -----------
 

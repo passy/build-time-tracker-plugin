@@ -5,7 +5,7 @@ buildscript {
   }
   dependencies {
     classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.5.1'
-    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.2.+'
+    classpath 'net.rdrei.android.buildtimetracker:gradle-plugin:0.9.+'
   }
 }
 
@@ -13,6 +13,19 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'nexus'
 apply plugin: 'idea'
+apply plugin: 'build-time-tracker'
+
+buildtimetracker {
+  reporters {
+    csv {
+      output "times.csv"
+      append true
+      header false
+    }
+
+    summary {}
+  }
+}
 
 dependencies {
   repositories {

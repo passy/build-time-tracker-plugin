@@ -64,7 +64,7 @@ class CSVSummaryReporterTest {
         def mockPrettyTime = new MockFor(PrettyTime)
         def mockLogger = new MockFor(Logger)
         def lines = []
-        mockLogger.demand.quiet(4) { l -> lines << l }
+        mockLogger.demand.lifecycle(4) { l -> lines << l }
         mockPrettyTime.demand.format { "2 weeks ago" }
 
         mockPrettyTime.use {
@@ -82,7 +82,7 @@ class CSVSummaryReporterTest {
         def mockLogger = new MockFor(Logger)
         def lines = []
         def err = null
-        mockLogger.demand.quiet(4) { l -> lines << l }
+        mockLogger.demand.lifecycle(4) { l -> lines << l }
         mockPrettyTime.demand.format { "2 weeks ago" }
 
         mockPrettyTime.use {
@@ -105,7 +105,7 @@ class CSVSummaryReporterTest {
         def mockLogger = new MockFor(Logger)
         def mockDateUtils = new MockFor(DateUtils)
         def lines = []
-        mockLogger.demand.quiet(4) { l -> lines << l }
+        mockLogger.demand.lifecycle(4) { l -> lines << l }
         mockDateUtils.demand.getLocalMidnightUTCTimestamp { 1407188121286L }
 
         mockDateUtils.use {

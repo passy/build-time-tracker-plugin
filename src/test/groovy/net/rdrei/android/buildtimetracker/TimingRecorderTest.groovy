@@ -1,13 +1,11 @@
 package net.rdrei.android.buildtimetracker
 
 import groovy.mock.interceptor.MockFor
-import net.rdrei.android.buildtimetracker.BuildTimeTrackerPlugin
-import net.rdrei.android.buildtimetracker.TimingRecorder
 import net.rdrei.android.buildtimetracker.reporters.AbstractBuildTimeTrackerReporter
+import net.rdrei.android.buildtimetracker.util.Clock
 import org.gradle.api.Task
-import org.gradle.api.tasks.TaskState
-import org.gradle.util.Clock
 import org.gradle.api.logging.Logger
+import org.gradle.api.tasks.TaskState
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
@@ -24,6 +22,11 @@ class TimingRecorderTest {
 
     MockFor mockClock(int ms) {
         def mockClock = new MockFor(Clock)
+
+        mockClock.demand.with {
+            Clock() { new Expando([startTimeInMs: System.currentTimeMillis()]) }
+        }
+
         mockClock.demand.getTimeInMs { ms }
 
         mockClock

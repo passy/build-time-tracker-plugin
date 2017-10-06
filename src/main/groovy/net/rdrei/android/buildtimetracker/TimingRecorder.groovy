@@ -1,12 +1,10 @@
 package net.rdrei.android.buildtimetracker
 
-import java.util.Date;
+import net.rdrei.android.buildtimetracker.util.Clock
 import org.gradle.BuildResult
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
-import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
-import org.gradle.util.Clock
 
 class Timing {
     long ms
@@ -35,7 +33,7 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
 
     @Override
     void beforeExecute(Task task) {
-        clock = new Clock(new Date().getTime())
+        clock = new Clock()
     }
 
     @Override

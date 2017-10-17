@@ -4,7 +4,7 @@ class Clock {
     long startTimeInMs
 
     Clock() {
-        Clock(System.currentTimeMillis())
+        this(System.currentTimeMillis())
     }
 
     Clock(long startTimeInMs) {

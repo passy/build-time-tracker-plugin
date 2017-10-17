@@ -23,10 +23,6 @@ class TimingRecorderTest {
     MockFor mockClock(int ms) {
         def mockClock = new MockFor(Clock)
 
-        mockClock.demand.with {
-            Clock() { new Expando([startTimeInMs: System.currentTimeMillis()]) }
-        }
-
         mockClock.demand.getTimeInMs { ms }
 
         mockClock

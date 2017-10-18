@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.11
+------------
+
+ * Compatibility with Gradle 4.2.
+ * Change logging levels.
+
 Version 0.10
 ------------
 

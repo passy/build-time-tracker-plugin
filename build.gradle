@@ -44,7 +44,7 @@ dependencies {
 }
 
 group = 'net.rdrei.android.buildtimetracker'
-version = '0.11.0-SNAPSHOT'
+version = '0.11.0'
 
 install {
   repositories.mavenInstaller {

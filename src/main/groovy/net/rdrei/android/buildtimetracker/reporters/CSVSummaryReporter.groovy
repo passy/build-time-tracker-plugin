@@ -39,17 +39,23 @@ class CSVSummaryReporter extends AbstractBuildTimeTrackerReporter {
     }
 
     void printReport(CSVReader reader) {
-        def lines = reader.readAll()
-        if (lines.size() == 0) return
+        try {
+            def lines = reader.readAll()
+            if (lines.size() == 0) return
 
-        logger.lifecycle "== CSV Build Time Summary =="
+            logger.lifecycle "== CSV Build Time Summary =="
 
-        Map<Long, Long> times = lines.findAll { it[0] != 'timestamp' }.groupBy { it[0] }.collectEntries {
-            k, v -> [Long.valueOf(k), v.collect { Long.valueOf(it[6]) }.sum()]
+            Map<Long, Long> times = lines.findAll { it[0] != 'timestamp' }.groupBy {
+                it[0]
+            }.collectEntries {
+                k, v -> [Long.valueOf(k), v.collect { Long.valueOf(it[6]) }.sum()]
+            }
+
+            printToday(times)
+            printTotal(times)
+        } finally {
+            reader.close()
         }
-
-        printToday(times)
-        printTotal(times)
     }
 
     void printTotal(Map<Long, Long> times) {

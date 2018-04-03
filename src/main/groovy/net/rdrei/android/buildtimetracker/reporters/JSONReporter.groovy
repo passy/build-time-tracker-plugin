@@ -53,7 +53,11 @@ class JSONReporter extends AbstractBuildTimeTrackerReporter {
         ]
 
         FileWriter writer = new FileWriter(file, append)
-        writer.write(new JsonBuilder(data).toPrettyString())
-        writer.flush()
+        try {
+            writer.write(new JsonBuilder(data).toPrettyString())
+            writer.flush()
+        } finally {
+            writer.close()
+        }
     }
 }

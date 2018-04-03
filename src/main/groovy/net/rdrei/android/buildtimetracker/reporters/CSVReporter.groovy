@@ -26,34 +26,36 @@ class CSVReporter extends AbstractBuildTimeTrackerReporter {
 
         CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, append)))
 
-        if (getOption("header", "true").toBoolean()) {
-            String[] headers = ["timestamp", "order", "task", "success", "did_work", "skipped", "ms", "date",
-                                "cpu", "memory", "os"]
-            writer.writeNext(headers)
+        try {
+            if (getOption("header", "true").toBoolean()) {
+                String[] headers = ["timestamp", "order", "task", "success", "did_work", "skipped", "ms", "date",
+                                    "cpu", "memory", "os"]
+                writer.writeNext(headers)
+            }
+
+            def info = new SysInfo()
+            def osId = info.getOSIdentifier()
+            def cpuId = info.getCPUIdentifier()
+            def maxMem = info.getMaxMemory()
+
+            timings.eachWithIndex { timing, idx ->
+                String[] line = [
+                        timestamp.toString(),
+                        idx.toString(),
+                        timing.path,
+                        timing.success.toString(),
+                        timing.didWork.toString(),
+                        timing.skipped.toString(),
+                        timing.ms.toString(),
+                        df.format(new Date(timestamp)),
+                        cpuId,
+                        maxMem,
+                        osId
+                ].toArray()
+                writer.writeNext(line)
+            }
+        } finally {
+            writer.close()
         }
-
-        def info = new SysInfo()
-        def osId = info.getOSIdentifier()
-        def cpuId = info.getCPUIdentifier()
-        def maxMem = info.getMaxMemory()
-
-        timings.eachWithIndex { timing, idx ->
-            String[] line = [
-                    timestamp.toString(),
-                    idx.toString(),
-                    timing.path,
-                    timing.success.toString(),
-                    timing.didWork.toString(),
-                    timing.skipped.toString(),
-                    timing.ms.toString(),
-                    df.format(new Date(timestamp)),
-                    cpuId,
-                    maxMem,
-                    osId
-            ].toArray()
-            writer.writeNext(line)
-        }
-
-        writer.close()
     }
 }

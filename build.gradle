@@ -10,7 +10,8 @@ buildscript {
 }
 
 plugins {
-  id "com.gradle.plugin-publish" version "0.10.0"
+  id 'com.gradle.plugin-publish' version '0.10.0'
+  id 'java-gradle-plugin'
 }
 
 apply plugin: 'groovy'
@@ -98,6 +99,28 @@ modifyPom {
         name 'Pascal Hartig'
         email 'phartig@rdrei.net'
       }
+    }
+  }
+}
+
+gradlePlugin {
+  plugins {
+    buildTimeTrackerPlugin {
+      id = group
+      implementationClass = 'net.rdrei.android.buildtimetracker.BuildTimeTrackerPlugin'
+    }
+  }
+}
+
+pluginBundle {
+  website = 'https://github.com/passy/build-time-tracker-plugin'
+  vcsUrl = 'https://github.com/passy/build-time-tracker-plugin.git'
+  description = 'Gradle plugin to continuously track and report your build times.'
+  tags = ['gradle', 'performance', 'buildtimes', 'matrics']
+
+  plugins {
+    buildTimeTrackerPlugin {
+      displayName = 'Build Time Tracker'
     }
   }
 }

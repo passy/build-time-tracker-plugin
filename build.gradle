@@ -9,6 +9,10 @@ buildscript {
   }
 }
 
+plugins {
+  id "com.gradle.plugin-publish" version "0.10.0"
+}
+
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'nexus'

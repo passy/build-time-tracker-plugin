@@ -18,7 +18,16 @@ How much time do you spend each day waiting for Gradle? Now you know!
 
 ## Usage
 
-Apply the plugin in your `build.gradle`:
+Apply the plugin in your `build.gradle`. On Gradle >2.1 you can do this
+using the Plugin DSL Syntax:
+
+```groovy
+plugins {
+  id "net.rdrei.android.buildtimetracker" version "0.11.0"
+}
+```
+
+Otherwise, use it as `classpath` dependency:
 
 ```groovy
 buildscript {
@@ -32,7 +41,11 @@ buildscript {
 }
 
 apply plugin: "build-time-tracker"
+```
 
+Configure the plugin:
+
+```groovy
 buildtimetracker {
   reporters {
     csv {
